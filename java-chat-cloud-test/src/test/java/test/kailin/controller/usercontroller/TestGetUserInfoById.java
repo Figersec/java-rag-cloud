@@ -1,7 +1,6 @@
 package test.kailin.controller.usercontroller;
 
 import com.kailin.ChatApplication;
-import com.kailin.controller.UserController;
 import com.kailin.framework.TestCase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.testng.annotations.Test;

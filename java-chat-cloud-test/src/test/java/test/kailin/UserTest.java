@@ -1,7 +1,6 @@
 package test.kailin;
 
 import com.alibaba.fastjson.JSON;
-import com.kailin.controller.UserController;
 import com.kailin.request.UserIdReq;
 import com.kailin.response.UserInfoRes;
 import com.kailinjt.middleware.kp.common.api.entity.KpResponse;

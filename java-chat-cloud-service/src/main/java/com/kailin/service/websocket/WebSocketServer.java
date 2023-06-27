@@ -88,7 +88,7 @@ public class WebSocketServer {
                 } else if (StringUtils.isNotBlank(toUserId)) {
                     WebSocketServer target = group.getWebSocketServer(toUserId);
                     if (target != null) {
-                        target.sendMessage(jsonObject.toJSONString());
+                        target.sendMessage(jsonObject.getString("content"));
                     } else {
                         log.warn("请求的 userId：{} 不在分组 {} 中", toUserId, group.getGroupName());
                     }

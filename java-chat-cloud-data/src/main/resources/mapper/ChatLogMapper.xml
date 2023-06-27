@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kailin.dao.chat.mapper.ChatLogMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.kailin.dao.chat.entity.ChatLog">
+        <id column="id" property="id" />
+        <result column="from_user_id" property="fromUserId" />
+        <result column="to_user_id" property="toUserId" />
+        <result column="content" property="content" />
+        <result column="send_type" property="sendType" />
+        <result column="business_id" property="businessId" />
+        <result column="send_status" property="sendStatus" />
+        <result column="is_read" property="isRead" />
+        <result column="is_clear" property="isClear" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, from_user_id, to_user_id, content, send_type, business_id, send_status, is_read, isClear, create_time, update_time
+    </sql>
+
+</mapper>
