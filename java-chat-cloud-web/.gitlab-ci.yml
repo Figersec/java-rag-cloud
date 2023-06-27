@@ -1,0 +1,7 @@
+variables:
+  APP_JAR: java-chat-cloud-web/target/java-chat-cloud-web-*-exec.jar
+  APP_NAME: java-chat-cloud
+include:
+  - project: 'ops/runner-ci'
+    ref: master
+    file: 'java.yml'

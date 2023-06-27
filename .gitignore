@@ -1,0 +1,35 @@
+# 隐藏文件
+.idea/
+.classpath/
+.project/
+.vscode/
+.gnupg/
+
+#nodejs
+node_modules/
+node/
+
+# 公共目录
+DEFAULT_GROUP
+logs
+target
+*-codegenerator
+
+# 扩展名
+*.iml
+*.iws
+*.log
+*.patch
+*.private.md
+
+# Jebel配置
+rebel.*
+# 默认忽略的文件
+/shelf/
+/workspace.xml
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+# 基于编辑器的 HTTP 客户端请求
+/httpRequests/
+

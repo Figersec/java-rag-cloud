@@ -11,7 +11,7 @@
     <artifactId>java-chat-cloud-test</artifactId>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <start-class>com.kailin.TestApplication</start-class>
+        <start-class>com.kailin.ChatApplication</start-class>
     </properties>
     <dependencies>
         <dependency>
@@ -78,7 +78,7 @@
                     <!-- 生成测试类和excel的物理地址，到src/test为止 -->
                     <testDirectory>/Users/chengpuhui/klProject/archetest/java-demo/java-demo-test/src/test</testDirectory>
                     <!-- springboot启动类的全路径 -->
-                    <applicationClass>com.kailin.TestApplication</applicationClass>
+                    <applicationClass>com.kailin.ChatApplication</applicationClass>
                 </configuration>
             </plugin>
         </plugins>

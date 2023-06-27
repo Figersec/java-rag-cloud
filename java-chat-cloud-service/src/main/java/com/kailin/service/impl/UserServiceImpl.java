@@ -1,8 +1,8 @@
 package com.kailin.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.kailin.dao.demo.entity.DmUser;
-import com.kailin.dao.demo.mapper.DmUserMapper;
+import com.kailin.dao.chat.entity.DmUser;
+import com.kailin.dao.chat.mapper.DmUserMapper;
 import com.kailin.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

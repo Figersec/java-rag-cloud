@@ -44,9 +44,9 @@ public class MybatisPlusConfig {
      * 主库
      * @return
      */
-    @Bean(name = "demoMainDataSource")
-    @ConfigurationProperties(prefix = "spring.datasource.druid.demomain" )
-    public DataSource demoMainDataSource() {
+    @Bean(name = "chatMainDataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.druid.chatmain" )
+    public DataSource chatMainDataSource() {
         return DruidDataSourceBuilder.create().build();
     }
 
@@ -54,9 +54,9 @@ public class MybatisPlusConfig {
      * 从库
      * @return
      */
-    @Bean(name = "demoSlaveDataSource")
-    @ConfigurationProperties(prefix = "spring.datasource.druid.demoslave" )
-    public DataSource demoSlaveDataSource() {
+    @Bean(name = "chatSlaveDataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.druid.chatslave" )
+    public DataSource chatSlaveDataSource() {
         return DruidDataSourceBuilder.create().build();
     }
 
@@ -67,7 +67,7 @@ public class MybatisPlusConfig {
      */
     @Bean
     public DataSourceAspect dsAspect() {
-        return DataSourceAspect.getInstance("demoMainDataSource");
+        return DataSourceAspect.getInstance("chatMainDataSource");
     }
 
     /**
@@ -78,15 +78,15 @@ public class MybatisPlusConfig {
      */
     @Bean
     @Primary
-    public DataSource multipleDataSource(@Qualifier("demoMainDataSource") DataSource demoMainDataSource, @Qualifier("demoSlaveDataSource") DataSource demoSlaveDataSource) {
+    public DataSource multipleDataSource(@Qualifier("chatMainDataSource") DataSource chatMainDataSource, @Qualifier("chatSlaveDataSource") DataSource chatSlaveDataSource) {
         MultipleDataSource multipleDataSource = new MultipleDataSource();
         Map<Object, Object> targetDataSources = new HashMap<>();
-        targetDataSources.put("demoMainDataSource", demoMainDataSource);
-        targetDataSources.put("demoSlaveDataSource", demoSlaveDataSource);
+        targetDataSources.put("chatMainDataSource", chatMainDataSource);
+        targetDataSources.put("chatSlaveDataSource", chatSlaveDataSource);
         //添加数据源
         multipleDataSource.setTargetDataSources(targetDataSources);
         //设置默认数据源
-        multipleDataSource.setDefaultTargetDataSource(demoMainDataSource);
+        multipleDataSource.setDefaultTargetDataSource(chatMainDataSource);
         return multipleDataSource;
     }
 }

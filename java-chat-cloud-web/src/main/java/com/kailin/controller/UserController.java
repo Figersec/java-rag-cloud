@@ -1,6 +1,6 @@
 package com.kailin.controller;
 
-import com.kailin.dao.demo.entity.DmUser;
+import com.kailin.dao.chat.entity.DmUser;
 import com.kailin.common.ErrorKRMessage;
 import com.kailin.proxy.CustomerServiceProxy;
 import com.kailin.proxy.vo.BusinessInfosVo;

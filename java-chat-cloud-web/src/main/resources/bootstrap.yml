@@ -41,8 +41,7 @@ spring:
           slow-sql-millis: 1000
   jackson:
     time-zone: GMT+8
-    serialization:
-      write-dates-as-timestamps: true
+    date-format: yyyy-MM-dd HH:mm:ss
 mybatis-plus:
   global-config:
     db-config:

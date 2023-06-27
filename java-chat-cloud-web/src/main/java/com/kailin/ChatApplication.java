@@ -16,8 +16,8 @@ import org.springframework.retry.annotation.EnableRetry;
 @EnableFeignClients(basePackages = {"com.kailin.*"})
 @MapperScan(basePackages={"com.kailin.**.mapper"})
 @EnableAspectJAutoProxy
-public class TestApplication {
+public class ChatApplication {
     public static void main(String[] args) {
-        SpringApplication.run(TestApplication.class, args);
+        SpringApplication.run(ChatApplication.class, args);
     }
 }

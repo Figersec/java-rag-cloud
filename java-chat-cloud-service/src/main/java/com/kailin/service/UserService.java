@@ -1,7 +1,7 @@
 package com.kailin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.kailin.dao.demo.entity.DmUser;
+import com.kailin.dao.chat.entity.DmUser;
 
 /**
  * @Author chengpuhui

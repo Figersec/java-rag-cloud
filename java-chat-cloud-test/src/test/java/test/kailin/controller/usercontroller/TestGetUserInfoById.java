@@ -1,6 +1,6 @@
 package test.kailin.controller.usercontroller;
 
-import com.kailin.TestApplication;
+import com.kailin.ChatApplication;
 import com.kailin.controller.UserController;
 import com.kailin.framework.TestCase;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 
 import java.util.Map;
 
-@SpringBootTest(classes = TestApplication.class)
+@SpringBootTest(classes = ChatApplication.class)
 public class TestGetUserInfoById extends TestCase<UserController>{
 
     @Override

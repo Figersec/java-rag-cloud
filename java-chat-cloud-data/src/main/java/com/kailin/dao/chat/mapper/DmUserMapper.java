@@ -1,6 +1,6 @@
-package com.kailin.dao.demo.mapper;
+package com.kailin.dao.chat.mapper;
 
-import com.kailin.dao.demo.entity.DmUser;
+import com.kailin.dao.chat.entity.DmUser;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

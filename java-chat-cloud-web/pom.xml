@@ -11,7 +11,7 @@
     <artifactId>java-chat-cloud-web</artifactId>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <start-class>com.kailin.TestApplication</start-class>
+        <start-class>com.kailin.ChatApplication</start-class>
     </properties>
     <dependencies>
         <dependency>
@@ -53,7 +53,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>2.6.2</version>
                 <configuration>
-                    <mainClass>com.kailin.TestApplication</mainClass>
+                    <mainClass>com.kailin.ChatApplication</mainClass>
                     <classifier>exec</classifier>
                 </configuration>
                 <executions>
