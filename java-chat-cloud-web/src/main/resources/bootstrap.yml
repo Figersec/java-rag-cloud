@@ -1,0 +1,56 @@
+server:
+  port: 10086
+  servlet:
+    context-path: /@project.parent.artifactId@
+spring:
+  profiles:
+    active: @profiles.active@
+  application:
+    name: @project.parent.artifactId@
+  cloud:
+    nacos:
+      config:
+        enabled: true
+        file-extension: yml
+        shared-configs:
+          - data-id: ${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+            refresh: true
+  datasource:
+    druid:
+      initial-size: 10
+      max-active: 100
+      min-idle: 10
+      max-wait: 60000
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      #Oracle需要打开注释
+      #validation-query: SELECT 1 FROM DUAL
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      stat-view-servlet:
+        enabled: true
+        url-pattern: /druid/*
+        login-username: admin
+        login-password: admin
+      filter:
+        stat:
+          log-slow-sql: true
+          slow-sql-millis: 1000
+  jackson:
+    time-zone: GMT+8
+    serialization:
+      write-dates-as-timestamps: true
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-field: is_delete
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+  configuration:
+    #属性映射--开启驼峰命名
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+  mapper-locations: ["classpath*:/mapper/**/*.xml"]

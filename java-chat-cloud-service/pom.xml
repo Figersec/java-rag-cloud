@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>java-chat-cloud</artifactId>
+        <groupId>com.kailin</groupId>
+        <version>${revision}</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>java-chat-cloud-service</artifactId>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>com.kailinjt.middleware</groupId>
+            <artifactId>k-project-common-service</artifactId>
+        </dependency>
+        <!-- 分布式事务依赖 -->
+        <!-- <dependency>-->
+        <!--     <groupId>com.alibaba.cloud</groupId>-->
+        <!--     <artifactId>spring-cloud-starter-alibaba-seata</artifactId>-->
+        <!-- </dependency>-->
+        <dependency>
+            <groupId>com.kailin</groupId>
+            <artifactId>java-chat-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.kailin</groupId>
+            <artifactId>java-chat-cloud-data</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.kailin</groupId>
+            <artifactId>java-chat-cloud-proxy</artifactId>
+            <version>${revision}</version>
+        </dependency>
+    </dependencies>
+</project>
