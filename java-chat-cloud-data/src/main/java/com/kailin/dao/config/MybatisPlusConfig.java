@@ -3,11 +3,13 @@ package com.kailin.dao.config;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
+import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import com.kailinjt.middleware.kp.common.data.MultipleDataSource;
 import com.kailinjt.middleware.kp.common.data.aspect.DataSourceAspect;
+import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.type.JdbcType;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,6 +19,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 import javax.sql.DataSource;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +39,34 @@ public class MybatisPlusConfig {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
         return interceptor;
+    }
+
+    @Bean
+    public MetaObjectHandler metaObjectHandler() {
+        return new MetaObjectHandler() {
+            @Override
+            public void insertFill(MetaObject metaObject) {
+                this.strictInsertFill(metaObject, "createTime", Date.class, new Date());
+                this.strictInsertFill(metaObject, "isDelete", Boolean.class, false);
+//                if (metaObject.hasSetter("createUserId") && metaObject.getValue("createUserId") == null) {
+//                    log.debug("开始填充创建人......");
+//                    this.strictInsertFill(metaObject, "createUserId", String.class, currentUserId());
+//                }
+            }
+
+            @Override
+            public void updateFill(MetaObject metaObject) {
+                // 默认传入不为空则不填充，故这里置为空再填充
+                metaObject.setValue("updateTime", null);
+                this.strictUpdateFill(metaObject, "updateTime", Date.class, new Date());
+//                if (metaObject.hasSetter("updateUserId") && metaObject.getValue("updateUserId") == null) {
+//                    metaObject.setValue("updateUserId", null);
+//                    log.debug("开始填充修改人......");
+//                    this.strictUpdateFill(metaObject, "updateUserId", String.class, currentUserId());
+//                }
+            }
+
+        };
     }
 
     /***************************** 以下为多数据源动态数据源切换配置，不使用可以不配置 *****************************/

@@ -1,9 +1,7 @@
 package com.kailin.service.chatuser;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.kailin.dao.chat.entity.ChatLog;
-import com.kailin.dao.chat.mapper.ChatLogMapper;
-import com.kailin.dao.chat.mapper.ChatMapper;
+import com.kailin.dao.chat.entity.ChatUser;
 import com.kailin.dao.chat.mapper.ChatUserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class IChatUserServiceImpl extends ServiceImpl<ChatLogMapper, ChatLog> implements IChatUserService {
+public class IChatUserServiceImpl extends ServiceImpl<ChatUserMapper, ChatUser> implements IChatUserService {
 
     private final ChatUserMapper chatUserMapper;
 }
