@@ -51,5 +51,8 @@ mybatis-plus:
   configuration:
     #属性映射--开启驼峰命名
     map-underscore-to-camel-case: true
+    default-enum-type-handler: com.kailin.dao.enums.EnumTypeHandler
     cache-enabled: false
-  mapper-locations: [ "classpath*:/mapper/**/*.xml" ]
+  type-enums-package: com.kailin.**.enums
+  mapper-locations: ["classpath*:/mapper/**/*.xml"]
+
