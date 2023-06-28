@@ -8,11 +8,14 @@ import com.kailin.request.chatuser.ChatUserReq;
 import com.kailin.response.chat.ChatRes;
 import com.kailin.response.chatuser.ChatUserRes;
 import com.kailin.service.chatuser.IChatUserService;
+import com.kailinjt.middleware.kp.common.api.entity.KRMessageCommon;
+import com.kailinjt.middleware.kp.common.api.exception.KBException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -37,6 +40,9 @@ public class IChatServiceImpl extends ServiceImpl<ChatMapper, Chat> implements I
         String chatId = chatReq.getChatId();
         // 没有则创建房间
         if(StringUtils.isBlank(chatId)){
+            if(CollectionUtils.isEmpty(chatReq.getChatUserList())){
+                throw new KBException(KRMessageCommon.PARAM_ERROR_400, "创建聊天失败,缺少用户信息");
+            }
             return createChat(chatReq);
         }
         //有聊天id则返回房间信息及用户列表
