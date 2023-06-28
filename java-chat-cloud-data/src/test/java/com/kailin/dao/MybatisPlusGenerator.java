@@ -33,19 +33,19 @@ import java.util.List;
 public class MybatisPlusGenerator {
 
     //作者名
-    private static final String AUTHOR = "System";
+    private static final String AUTHOR = "杨松";
     //表table的前缀，不加到生成的类名中
     private static final String PREFIX = "";
     //功能模块名称，生成的文件会存放到模块下
     private static final String MODULE_NAME = "";
     //要生成的表名
-    private static final String[] TABLES= {"dm_user"};
-    private static final String JDBC_URL = "jdbc:mysql://192.168.20.186:3306/demo?useUnicode=true&characterEncoding=UTF-8" +
+    private static final String[] TABLES= {"chat"};
+    private static final String JDBC_URL = "jdbc:mysql://192.168.21.112:3306/kl_chat?useUnicode=true&characterEncoding=UTF-8" +
             "&useSSL=false&zeroDateTimeBehavior=convertToNull&";
     private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
     private static final String JDBC_USERNAME = "root";
-    private static final String JDBC_PASSWORD = "123456";
-    private static final String BASE_PACKAGE = "com.kailin.dao.demo";
+    private static final String JDBC_PASSWORD = "qwer1234";
+    private static final String BASE_PACKAGE = "com.kailin.dao.chat";
 
     public static void main(String[] args) {
         //当前项目路径

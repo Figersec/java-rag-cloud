@@ -72,8 +72,8 @@ public class MybatisPlusConfig {
 
     /**
      * 多数据源配置
-     * @param demoMainDataSource
-     * @param demoSlaveDataSource
+     * @param chatMainDataSource
+     * @param chatSlaveDataSource
      * @return
      */
     @Bean
