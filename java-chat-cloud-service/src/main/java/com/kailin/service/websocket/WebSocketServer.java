@@ -1,16 +1,14 @@
 package com.kailin.service.websocket;
 
+import cn.hutool.extra.spring.SpringUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.kailin.enums.OperationTypeEnum;
 import com.kailin.service.websocket.factory.MessageFactory;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
@@ -44,8 +42,6 @@ public class WebSocketServer {
      */
     private WebSocketGroup group;
 
-    @Autowired
-    MessageFactory messageFactory;
 
     /**
      * 连接建立成功调用的方法
@@ -90,6 +86,7 @@ public class WebSocketServer {
         try {
             JSONObject messageJson = JSON.parseObject(message);
             OperationTypeEnum operationTypeEnum = OperationTypeEnum.getEnumByValue(messageJson.getString("operationType"));
+            MessageFactory messageFactory = SpringUtil.getBean(MessageFactory.class);
             messageFactory.getExecutor(operationTypeEnum).execute(group.getWebSocketServer(this.userId), messageJson);
         } catch (Exception e) {
             log.error("websocket发送失败: {}", e);

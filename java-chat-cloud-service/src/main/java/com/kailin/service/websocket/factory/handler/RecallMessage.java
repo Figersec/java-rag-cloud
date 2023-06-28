@@ -5,7 +5,6 @@ import com.kailin.service.websocket.WebSocketGroup;
 import com.kailin.service.websocket.WebSocketServer;
 import com.kailin.service.websocket.factory.AbstractRecoverTypeExecutor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 /**
@@ -22,7 +21,7 @@ public class RecallMessage extends AbstractRecoverTypeExecutor {
         try {
             WebSocketGroup group = webSocketServer.getGroup();
             if (null != group) {
-                group.sendInfoExcludeUser(messageJson.toJSONString(),null);
+                group.sendInfoExcludeUser(messageJson.toJSONString(), null);
             }
         } catch (Exception e) {
             log.error("撤回消息异常:{}", e);
