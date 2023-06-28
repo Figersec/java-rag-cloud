@@ -1,5 +1,6 @@
 package com.kailin.service.chatlog;
 
+import com.kailin.dao.chat.entity.ChatLog;
 import com.kailin.request.chatlog.ChatLogReq;
 import com.kailin.response.chatlog.ChatLogRes;
 
@@ -26,6 +27,15 @@ public interface IChatLogService {
      * @return
      */
     List<ChatLogRes> getChatLogByChatId(String chatId);
+
+
+    /**
+     * 更新撤回状态
+     * @param chatLogId
+     * @return
+     */
+    boolean updateRecallStatus(String chatLogId, Integer status);
+
 
 
 

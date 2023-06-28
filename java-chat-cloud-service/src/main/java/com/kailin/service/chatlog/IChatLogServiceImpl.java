@@ -1,6 +1,8 @@
 package com.kailin.service.chatlog;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.extension.conditions.update.UpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kailin.dao.chat.entity.ChatLog;
 import com.kailin.dao.chat.mapper.ChatLogMapper;
@@ -45,5 +47,12 @@ public class IChatLogServiceImpl extends ServiceImpl<ChatLogMapper, ChatLog> imp
         return chatLogConvert.do2res(chatLogs);
     }
 
-
+    @Override
+    public boolean updateRecallStatus(String chatLogId, Integer recallStatus) {
+        LambdaUpdateWrapper<ChatLog> update = new LambdaUpdateWrapper<>();
+        update.set(ChatLog::getRecall,recallStatus);
+        update.eq(ChatLog::getId, chatLogId);
+        this.update(update);
+        return true;
+    }
 }
