@@ -82,6 +82,7 @@ public class WebSocketServer {
     public void onMessage(String message) {
         log.info("收到消息：{}", message);
         if (StringUtils.isBlank(message)) {
+            log.info("消息为空,中止转发");
             return;
         }
         try {
