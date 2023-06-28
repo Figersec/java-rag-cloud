@@ -26,10 +26,10 @@ public class ChatController {
     @Autowired
     private IChatService iChatService;
 
-    @PostMapping("/createChat")
+    @PostMapping("/openChat")
     @ApiOperation(value = "创建聊天室")
-    public KpResponse<ChatRes> createChat(@RequestBody ChatReq chatRe) {
-        ChatRes chat = iChatService.createChat(chatRe);
+    public KpResponse<ChatRes> openChat(@RequestBody ChatReq chatRe) {
+        ChatRes chat = iChatService.openChat(chatRe);
         return KpResponse.data(chat);
     }
 }
