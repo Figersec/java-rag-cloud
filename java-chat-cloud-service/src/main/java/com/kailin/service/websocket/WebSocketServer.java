@@ -2,8 +2,11 @@ package com.kailin.service.websocket;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.kailin.enums.OperationTypeEnum;
+import com.kailin.service.websocket.factory.MessageFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
@@ -22,7 +25,7 @@ public class WebSocketServer {
     /**
      * 用来记录当前在线连接数
      */
-    private static AtomicInteger onlineCount = new AtomicInteger(0);
+    private static final AtomicInteger ONLINE_COUNT = new AtomicInteger(0);
 
     /**
      * WebSocketServer 对应的 Session
@@ -39,6 +42,9 @@ public class WebSocketServer {
      */
     private WebSocketGroup group;
 
+    @Autowired
+    private MessageFactory messageFactory;
+
     /**
      * 连接建立成功调用的方法
      */
@@ -51,8 +57,8 @@ public class WebSocketServer {
         // 把当前 WebSocketServer 对象添加到所在分组
         group.addWebSocketServer(userId, this);
         // 在线人数加一
-        int count = onlineCount.incrementAndGet();
-        log.info("用户 {} 连接成功，分组：{}，当前在线人数：{}", userId, group.getGroupName(), count);
+        int count = ONLINE_COUNT.incrementAndGet();
+        log.info("用户 {} 连接成功，分组：{}，当前在线人数：{}", userId, group.getChatId(), count);
     }
 
     /**
@@ -63,8 +69,8 @@ public class WebSocketServer {
         // 把 WebSocketServer 对象从所在分组移除
         group.removeWebSocketServer(userId);
         // 在线人数减一
-        int count = onlineCount.decrementAndGet();
-        log.info("用户 {} 退出，分组：{}，当前在线人数：{}", userId, group.getGroupName(), count);
+        int count = ONLINE_COUNT.decrementAndGet();
+        log.info("用户 {} 退出，分组：{}，当前在线人数：{}", userId, group.getChatId(), count);
     }
 
     /**
@@ -74,35 +80,18 @@ public class WebSocketServer {
      */
     @OnMessage
     public void onMessage(String message) {
-        log.info("用户消息：{}，报文：{}", userId, message);
-        if (StringUtils.isNotBlank(message)) {
-            try {
-                JSONObject jsonObject = JSON.parseObject(message);
-                String fromUserId = this.userId;
-                String chatId = jsonObject.getString("chatId");
-                String toUserId = jsonObject.getString("toUserId");
-                if (StringUtils.isBlank(chatId) && StringUtils.isBlank(toUserId)) {
-                    // 心跳检测直接返回
-                    WebSocketGroup targetGroup = WebSocketGroupManager.getGroup(group.getGroupName());
-                    if (targetGroup != null) {
-                        targetGroup.sendInfoExcludeUser(jsonObject.toJSONString(), fromUserId);
-                    } else {
-                        log.warn("请求的 chatId：{} 不存在", group.getGroupName());
-                    }
-                } else if (StringUtils.isNotBlank(toUserId)) {
-                    WebSocketServer target = group.getWebSocketServer(toUserId);
-                    if (target != null) {
-                        String content = jsonObject.getString("content");
-                        // 发送消息
-                        target.sendMessage(content);
-                    } else {
-                        log.warn("请求的 userId：{} 不在分组 {} 中", toUserId, group.getGroupName());
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        log.info("收到消息：{}", message);
+        if (StringUtils.isBlank(message)) {
+            return;
         }
+        try {
+            JSONObject messageJson = JSON.parseObject(message);
+            OperationTypeEnum operationTypeEnum = OperationTypeEnum.getEnumByValue(messageJson.getString("operationType"));
+            messageFactory.getExecutor(operationTypeEnum).execute(group.getWebSocketServer(this.userId), messageJson);
+        } catch (Exception e) {
+            log.error("json消息格式转换失败: {}", e);
+        }
+
     }
 
 

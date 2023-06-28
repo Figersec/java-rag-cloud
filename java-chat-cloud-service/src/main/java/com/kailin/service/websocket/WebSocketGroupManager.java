@@ -20,8 +20,8 @@ public class WebSocketGroupManager {
     /**
      * 获取或者创建指定分组
      */
-    public static WebSocketGroup getOrCreateGroup(String groupName) {
-        return webSocketGroupMap.computeIfAbsent(groupName, k -> new WebSocketGroup(groupName));
+    public static WebSocketGroup getOrCreateGroup(String chatId) {
+        return webSocketGroupMap.computeIfAbsent(chatId, k -> new WebSocketGroup(chatId));
     }
 
     public static WebSocketGroup getGroup(String groupName) {
@@ -33,7 +33,7 @@ public class WebSocketGroupManager {
      */
     public static void addGroup(WebSocketGroup group) {
         // 把指定分组添加到映射表中
-        webSocketGroupMap.put(group.getGroupName(), group);
+        webSocketGroupMap.put(group.getChatId(), group);
     }
 
     /**

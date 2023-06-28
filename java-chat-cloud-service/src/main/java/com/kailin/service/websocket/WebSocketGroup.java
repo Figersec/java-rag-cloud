@@ -3,7 +3,6 @@ package com.kailin.service.websocket;
 
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -14,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Component
 public class WebSocketGroup {
-    private String groupName;
+    private String chatId;
 
     /**
      * 用来存放每个客户端对应的 WebSocketServer 对象
@@ -25,8 +24,8 @@ public class WebSocketGroup {
         this("default");
     }
 
-    public WebSocketGroup(String groupName) {
-        this.groupName = groupName;
+    public WebSocketGroup(String chatId) {
+        this.chatId = chatId;
     }
 
     public void addWebSocketServer(String userId, WebSocketServer webSocketServer) {
@@ -55,7 +54,7 @@ public class WebSocketGroup {
      * @param message       消息内容
      * @param excludeUserId 要排除的用户 ID
      */
-    public void sendInfoExcludeUser(String message, String excludeUserId) throws IOException {
+    public void sendInfoExcludeUser(String message, String excludeUserId) {
         for (WebSocketServer webSocketServer : webSocketMap.values()) {
             if (!webSocketServer.getUserId().equals(excludeUserId)) {
                 webSocketServer.sendMessage(message);
@@ -72,8 +71,8 @@ public class WebSocketGroup {
     }
 
     // getter 方法
-    public String getGroupName() {
-        return groupName;
+    public String getChatId() {
+        return chatId;
     }
 
     public Map<String, WebSocketServer> getWebSocketMap() {
