@@ -1,4 +1,4 @@
-package com.kailin.service;
+package com.kailin.service.chatlog;
 
 import com.kailin.dao.chat.entity.ChatLog;
 
