@@ -1,7 +1,7 @@
 package com.kailin.service.chatlog;
 
-import com.kailin.dao.chat.entity.ChatLog;
 import com.kailin.request.chatlog.ChatLogReq;
+import com.kailin.response.chatlog.ChatLogRes;
 
 import java.util.List;
 
@@ -10,12 +10,7 @@ import java.util.List;
  */
 public interface IChatLogService {
 
-    /**
-     * 条件获取聊天记录
-     * @param chatLog
-     * @return
-     */
-    List<ChatLog> getChatContentByCondition(ChatLog chatLog);
+
 
     /**
      * 插入聊天日志
@@ -23,6 +18,14 @@ public interface IChatLogService {
      * @return
      */
     boolean insertChatLog(ChatLogReq chatLogReq);
+
+
+    /**
+     * 根据chatId(房间id)获取聊天记录
+     * @param chatId
+     * @return
+     */
+    List<ChatLogRes> getChatLogByChatId(String chatId);
 
 
 

@@ -2,7 +2,6 @@ package com.kailin.service.chatlog;
 
 import com.kailin.dao.chat.entity.ChatLog;
 import com.kailin.request.chatlog.ChatLogReq;
-import com.kailin.request.chatuser.ChatUserReq;
 import com.kailin.response.chatlog.ChatLogRes;
 import org.mapstruct.Mapper;
 
@@ -18,9 +17,9 @@ public interface ChatLogConvert {
 
     ChatLog req2do(ChatLogReq chatLogReq);
 
-    List<ChatLog> req2do(List<ChatUserReq> chatUserReq);
+    List<ChatLog> req2do(List<ChatLogReq> chatUserReq);
 
     ChatLogRes do2res(ChatLog chatLog);
 
-    List<ChatLogRes> do2res(List<ChatLogRes> chatUser);
+    List<ChatLogRes> do2res(List<ChatLog> chatUser);
 }

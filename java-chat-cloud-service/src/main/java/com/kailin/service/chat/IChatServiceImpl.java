@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -43,6 +44,7 @@ public class IChatServiceImpl extends ServiceImpl<ChatMapper, Chat> implements I
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public ChatRes createChat(ChatReq chatReq) {
         // 创建聊天
         String chatName = chatReq.getChatName();

@@ -5,6 +5,7 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.kailin.dao.chat.entity.ChatLog">
         <id column="id" property="id" />
+        <result column="chat_id" property="chatId" />
         <result column="send_user_id" property="sendUserId" />
         <result column="content" property="content" />
         <result column="meta" property="meta" />
@@ -15,7 +16,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, send_user_id, content, meta, recall, create_time, update_time
+        id, chat_id, send_user_id, content, meta, recall, create_time, update_time
     </sql>
 
 </mapper>

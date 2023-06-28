@@ -30,6 +30,9 @@ public class ChatLog extends Model<ChatLog> {
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private String id;
 
+    @ApiModelProperty(value = "聊天id")
+    private String chatId;
+
     @ApiModelProperty(value = "发送用户id")
     private String sendUserId;
 
@@ -40,7 +43,7 @@ public class ChatLog extends Model<ChatLog> {
     private String meta;
 
     @ApiModelProperty(value = "撤回：0否1是")
-    private String recall;
+    private Integer recall;
 
     @ApiModelProperty(value = "创建时间")
     @TableField(value = "create_time", fill = FieldFill.INSERT)
