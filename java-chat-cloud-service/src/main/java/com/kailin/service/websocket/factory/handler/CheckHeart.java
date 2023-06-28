@@ -30,7 +30,7 @@ public class CheckHeart extends AbstractRecoverTypeExecutor {
                 log.warn("请求的 chatId：{} 不存在", group.getChatId());
             }
         } catch (Exception e) {
-            log.error("发送消息异常:{}", e);
+            log.error("检测消息异常:{}", e);
         }
     }
 }

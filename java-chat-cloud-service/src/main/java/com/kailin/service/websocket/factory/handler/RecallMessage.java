@@ -25,7 +25,7 @@ public class RecallMessage extends AbstractRecoverTypeExecutor {
                 group.sendInfoExcludeUser(messageJson.toJSONString(),null);
             }
         } catch (Exception e) {
-            log.error("发送消息异常:{}", e);
+            log.error("撤回消息异常:{}", e);
         }
     }
 }
