@@ -1,6 +1,7 @@
 package com.kailin.service.chatlog;
 
 import com.kailin.dao.chat.entity.ChatLog;
+import com.kailin.request.chatlog.ChatLogReq;
 
 import java.util.List;
 
@@ -18,10 +19,10 @@ public interface IChatLogService {
 
     /**
      * 插入聊天日志
-     * @param chatLog
+     * @param chatLogReq
      * @return
      */
-    boolean insertChatLog(ChatLog chatLog);
+    boolean insertChatLog(ChatLogReq chatLogReq);
 
 
 

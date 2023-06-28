@@ -31,10 +31,7 @@ public class ChatLog extends Model<ChatLog> {
     private String id;
 
     @ApiModelProperty(value = "发送用户id")
-    private String fromUserId;
-
-    @ApiModelProperty(value = "接收用户id")
-    private String toUserId;
+    private String sendUserId;
 
     @ApiModelProperty(value = "内容")
     private String content;

@@ -3,6 +3,7 @@ package com.kailin.service.chatlog;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kailin.dao.chat.entity.ChatLog;
 import com.kailin.dao.chat.mapper.ChatLogMapper;
+import com.kailin.request.chatlog.ChatLogReq;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,8 @@ public class IChatLogServiceImpl extends ServiceImpl<ChatLogMapper, ChatLog> imp
     }
 
     @Override
-    public boolean insertChatLog(ChatLog chatLog) {
+    public boolean insertChatLog(ChatLogReq chatLogReq) {
+        ChatLog chatLog = chatLogConvert.req2do(chatLogReq);
         return false;
     }
 
