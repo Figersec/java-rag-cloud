@@ -40,7 +40,7 @@ public class ChatLog extends Model<ChatLog> {
     private String meta;
 
     @ApiModelProperty(value = "撤回：0否1是")
-    private String recall;
+    private Integer recall;
 
     @ApiModelProperty(value = "创建时间")
     @TableField(value = "create_time", fill = FieldFill.INSERT)
