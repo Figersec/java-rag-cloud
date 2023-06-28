@@ -4,7 +4,7 @@ package com.kailin.service.websocket.factory;
 import com.kailin.enums.OperationTypeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author 杨松
  */
 @Slf4j
-@Service
+@Component
 public class MessageFactory {
     private static final Map<String, String> beanName = new ConcurrentHashMap<>();
 

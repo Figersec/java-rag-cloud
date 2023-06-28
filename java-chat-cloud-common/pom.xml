@@ -44,6 +44,12 @@
         <dependency>
             <groupId>com.kailinjt.middleware</groupId>
             <artifactId>k-project-common-core</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>guava</artifactId>
+                    <groupId>com.google.guava</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.kailinjt.middleware</groupId>
