@@ -11,8 +11,11 @@ import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * @author 杨松
+ */
 @Slf4j
-@ServerEndpoint("/socket/{groupId}/{userId}")
+@ServerEndpoint("/socket/{chatId}/{userId}")
 @Component
 public class WebSocketServer {
 
@@ -40,11 +43,11 @@ public class WebSocketServer {
      * 连接建立成功调用的方法
      */
     @OnOpen
-    public void onOpen(Session session, @PathParam("groupId") String groupId, @PathParam("userId") String userId) {
+    public void onOpen(Session session, @PathParam("chatId") String chatId, @PathParam("userId") String userId) {
         this.session = session;
         this.userId = userId;
         // 获取或者创建当前分组
-        group = WebSocketGroupManager.getOrCreateGroup(groupId);
+        group = WebSocketGroupManager.getOrCreateGroup(chatId);
         // 把当前 WebSocketServer 对象添加到所在分组
         group.addWebSocketServer(userId, this);
         // 在线人数加一
@@ -76,15 +79,15 @@ public class WebSocketServer {
             try {
                 JSONObject jsonObject = JSON.parseObject(message);
                 String fromUserId = this.userId;
-                String toGroupId = jsonObject.getString("toGroupId");
+                String chatId = jsonObject.getString("chatId");
                 String toUserId = jsonObject.getString("toUserId");
-                if (StringUtils.isBlank(toGroupId) && StringUtils.isBlank(toUserId)) {
+                if (StringUtils.isBlank(chatId) && StringUtils.isBlank(toUserId)) {
                     // 心跳检测直接返回
                     WebSocketGroup targetGroup = WebSocketGroupManager.getGroup(group.getGroupName());
                     if (targetGroup != null) {
                         targetGroup.sendInfoExcludeUser(jsonObject.toJSONString(), fromUserId);
                     } else {
-                        log.warn("请求的 groupId：{} 不存在", group.getGroupName());
+                        log.warn("请求的 chatId：{} 不存在", group.getGroupName());
                     }
                 } else if (StringUtils.isNotBlank(toUserId)) {
                     WebSocketServer target = group.getWebSocketServer(toUserId);
