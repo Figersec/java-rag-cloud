@@ -1,6 +1,5 @@
 package com.kailin.service.chatlog;
 
-import com.kailin.dao.chat.entity.ChatLog;
 import com.kailin.request.chatlog.ChatLogReq;
 import com.kailin.response.chatlog.ChatLogRes;
 
@@ -22,11 +21,11 @@ public interface IChatLogService {
 
 
     /**
-     * 条件获取聊天记录
+     * 根据chatId(房间id)获取聊天记录
      * @param chatId
      * @return
      */
-    List<ChatLogRes> getChatContentByCondition(String chatId);
+    List<ChatLogRes> getChatLogByChatId(String chatId);
 
 
 

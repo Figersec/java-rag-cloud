@@ -35,7 +35,7 @@ public class IChatLogServiceImpl extends ServiceImpl<ChatLogMapper, ChatLog> imp
 
 
     @Override
-    public List<ChatLogRes> getChatContentByCondition(String chatId) {
+    public List<ChatLogRes> getChatLogByChatId(String chatId) {
         LambdaQueryWrapper<ChatLog> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(ChatLog::getChatId, chatId);
         queryWrapper.eq(ChatLog::getRecall, CommonEnum.NO.getValue());
