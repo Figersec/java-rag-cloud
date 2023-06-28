@@ -2,7 +2,6 @@ package com.kailin.service.chatlog;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.extension.conditions.update.UpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kailin.dao.chat.entity.ChatLog;
 import com.kailin.dao.chat.mapper.ChatLogMapper;
@@ -16,13 +15,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-/** 实现类
+/**
+ * 实现类
+ *
  * @author 杨松
  */
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class IChatLogServiceImpl extends ServiceImpl<ChatLogMapper, ChatLog> implements IChatLogService{
+public class IChatLogServiceImpl extends ServiceImpl<ChatLogMapper, ChatLog> implements IChatLogService {
 
     private final ChatLogMapper chatLogMapper;
     private final ChatLogConvert chatLogConvert;
@@ -43,6 +44,7 @@ public class IChatLogServiceImpl extends ServiceImpl<ChatLogMapper, ChatLog> imp
         LambdaQueryWrapper<ChatLog> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(ChatLog::getChatId, chatId);
         queryWrapper.eq(ChatLog::getRecall, CommonEnum.NO.getValue());
+        queryWrapper.orderByAsc(ChatLog::getCreateTime);
         List<ChatLog> chatLogs = chatLogMapper.selectList(queryWrapper);
         return chatLogConvert.do2res(chatLogs);
     }
@@ -50,7 +52,7 @@ public class IChatLogServiceImpl extends ServiceImpl<ChatLogMapper, ChatLog> imp
     @Override
     public boolean updateRecallStatus(String chatLogId, Integer recallStatus) {
         LambdaUpdateWrapper<ChatLog> update = new LambdaUpdateWrapper<>();
-        update.set(ChatLog::getRecall,recallStatus);
+        update.set(ChatLog::getRecall, recallStatus);
         update.eq(ChatLog::getId, chatLogId);
         this.update(update);
         return true;
