@@ -79,6 +79,7 @@ public class WebSocketServer {
                 String toGroupId = jsonObject.getString("toGroupId");
                 String toUserId = jsonObject.getString("toUserId");
                 if (StringUtils.isBlank(toGroupId) && StringUtils.isBlank(toUserId)) {
+                    // 心跳检测直接返回
                     WebSocketGroup targetGroup = WebSocketGroupManager.getGroup(group.getGroupName());
                     if (targetGroup != null) {
                         targetGroup.sendInfoExcludeUser(jsonObject.toJSONString(), fromUserId);
@@ -88,7 +89,9 @@ public class WebSocketServer {
                 } else if (StringUtils.isNotBlank(toUserId)) {
                     WebSocketServer target = group.getWebSocketServer(toUserId);
                     if (target != null) {
-                        target.sendMessage(jsonObject.getString("content"));
+                        String content = jsonObject.getString("content");
+                        // 发送消息
+                        target.sendMessage(content);
                     } else {
                         log.warn("请求的 userId：{} 不在分组 {} 中", toUserId, group.getGroupName());
                     }

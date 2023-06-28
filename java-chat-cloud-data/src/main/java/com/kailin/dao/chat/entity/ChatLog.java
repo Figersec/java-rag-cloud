@@ -41,20 +41,11 @@ public class ChatLog extends Model<ChatLog> {
     @ApiModelProperty(value = "内容")
     private String content;
 
-    @ApiModelProperty(value = "发送类型: 0群聊 1单聊")
-    private Byte sendType;
+    @ApiModelProperty(value = "元数据(给第三方用)")
+    private String meta;
 
-    @ApiModelProperty(value = "房间id（业务id）")
-    private String businessId;
-
-    @ApiModelProperty(value = "发送状态：0成功 1失败")
-    private String sendStatus;
-
-    @ApiModelProperty(value = "已读 ：0否1是")
-    private Byte isRead;
-
-    @ApiModelProperty(value = "消息是否被清空 ：0否1是")
-    private Byte isClear;
+    @ApiModelProperty(value = "撤回：0否1是")
+    private String recall;
 
     @ApiModelProperty(value = "创建时间")
     private Date createTime;
