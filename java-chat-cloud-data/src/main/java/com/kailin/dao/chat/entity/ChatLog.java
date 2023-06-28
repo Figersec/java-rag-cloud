@@ -30,6 +30,9 @@ public class ChatLog extends Model<ChatLog> {
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private String id;
 
+    @ApiModelProperty(value = "聊天id")
+    private String chatId;
+
     @ApiModelProperty(value = "发送用户id")
     private String sendUserId;
 
