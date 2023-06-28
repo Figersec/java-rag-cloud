@@ -15,7 +15,7 @@ public class WebSocketGroupManager {
     /**
      * 用来存放所有分组
      */
-    private static Map<String, WebSocketGroup> webSocketGroupMap = new ConcurrentHashMap<>();
+    private static final Map<String, WebSocketGroup> webSocketGroupMap = new ConcurrentHashMap<>();
 
     /**
      * 获取或者创建指定分组

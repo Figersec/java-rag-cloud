@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Component
 public class WebSocketGroup {
-    private String chatId;
+    private final String chatId;
 
     /**
      * 用来存放每个客户端对应的 WebSocketServer 对象
