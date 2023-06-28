@@ -38,7 +38,7 @@ spring:
     virtual-host: /
 logging:
   level:
-    "com.kailin" : DEBUG
+    "com.kailin": DEBUG
 # 启动时公共配置注入Nacos
 kp:
   common:

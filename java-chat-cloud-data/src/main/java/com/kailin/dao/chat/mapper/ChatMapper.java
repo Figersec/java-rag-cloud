@@ -1,7 +1,7 @@
 package com.kailin.dao.chat.mapper;
 
-import com.kailin.dao.chat.entity.Chat;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.kailin.dao.chat.entity.Chat;
 
 /**
  * <p>

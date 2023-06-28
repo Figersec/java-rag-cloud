@@ -24,20 +24,7 @@ public interface IChatLogService {
     boolean insertChatLog(ChatLog chatLog);
 
 
-    /**
-     * 更新消息已读状态
-     * @param chatLog
-     * @return
-     */
-    boolean updateReadStatus(ChatLog chatLog);
 
-
-    /**
-     * 清空消息
-     * @param chatLog
-     * @return
-     */
-    boolean clearChat(ChatLog chatLog);
 
 
 

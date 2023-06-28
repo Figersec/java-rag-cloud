@@ -1,7 +1,7 @@
 package com.kailin.service.chat;
 
-import com.kailin.dao.chat.entity.Chat;
-import com.kailin.dao.chat.entity.ChatLog;
+import com.kailin.request.chat.ChatReq;
+import com.kailin.response.chat.ChatRes;
 
 /**
  * @author 杨松
@@ -10,11 +10,27 @@ public interface IChatService {
 
 
     /**
-     * 创建聊天
-     * @param chatLog
+     * 打开房间
+     * @param chatReq
      * @return
      */
-    Chat createChat(ChatLog chatLog);
+    ChatRes openChat(ChatReq chatReq);
+
+    /**
+     * 创建房间
+     *
+     * @param chatReq
+     * @return
+     */
+    ChatRes createChat(ChatReq chatReq);
+
+
+    /**
+     * 查询房间信息
+     * @param chatId
+     * @return
+     */
+    ChatRes getChatById(String chatId);
 
 
 }

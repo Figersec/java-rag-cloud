@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.kailin</groupId>
     <artifactId>java-chat-cloud</artifactId>
@@ -200,11 +201,12 @@
             </properties>
         </profile>
     </profiles>
-<modules>  <module>java-chat-cloud-common</module>
-    <module>java-chat-cloud-data</module>
-    <module>java-chat-cloud-proxy</module>
-    <module>java-chat-cloud-service</module>
-    <module>java-chat-cloud-test</module>
-    <module>java-chat-cloud-web</module>
-  </modules>
+    <modules>
+        <module>java-chat-cloud-common</module>
+        <module>java-chat-cloud-data</module>
+        <module>java-chat-cloud-proxy</module>
+        <module>java-chat-cloud-service</module>
+        <module>java-chat-cloud-test</module>
+        <module>java-chat-cloud-web</module>
+    </modules>
 </project>

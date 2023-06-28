@@ -3,7 +3,6 @@ package com.kailin.service.chatlog;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kailin.dao.chat.entity.ChatLog;
 import com.kailin.dao.chat.mapper.ChatLogMapper;
-import com.kailin.dao.chat.mapper.ChatMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,6 +18,7 @@ import java.util.List;
 public class IChatLogServiceImpl extends ServiceImpl<ChatLogMapper, ChatLog> implements IChatLogService{
 
     private final ChatLogMapper chatLogMapper;
+    private final ChatLogConvert chatLogConvert;
 
 
     @Override
@@ -31,13 +31,4 @@ public class IChatLogServiceImpl extends ServiceImpl<ChatLogMapper, ChatLog> imp
         return false;
     }
 
-    @Override
-    public boolean updateReadStatus(ChatLog chatLog) {
-        return false;
-    }
-
-    @Override
-    public boolean clearChat(ChatLog chatLog) {
-        return false;
-    }
 }

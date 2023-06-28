@@ -6,4 +6,4 @@ spring:
         namespace: ${spring.application.name}
 logging:
   level:
-    "com.kailin" : DEBUG
+    "com.kailin": DEBUG

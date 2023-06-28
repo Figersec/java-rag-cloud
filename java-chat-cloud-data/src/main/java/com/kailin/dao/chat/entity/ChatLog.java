@@ -21,13 +21,13 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("chat_log")
-@ApiModel(value="ChatLog对象", description="")
+@ApiModel(value = "ChatLog对象", description = "")
 public class ChatLog extends Model<ChatLog> {
 
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "主键")
-    @TableId(value = "id", type = IdType.INPUT)
+    @TableId(value = "id", type = IdType.ASSIGN_ID)
     private String id;
 
     @ApiModelProperty(value = "发送用户id")
@@ -46,13 +46,12 @@ public class ChatLog extends Model<ChatLog> {
     private String recall;
 
     @ApiModelProperty(value = "创建时间")
-    @TableField(value = "create_time",fill= FieldFill.INSERT)
+    @TableField(value = "create_time", fill = FieldFill.INSERT)
     private Date createTime;
 
     @ApiModelProperty(value = "更新时间")
-    @TableField(value = "update_time",fill= FieldFill.INSERT)
+    @TableField(value = "update_time", fill = FieldFill.INSERT)
     private Date updateTime;
-
 
 
     @Override

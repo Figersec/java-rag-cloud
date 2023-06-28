@@ -20,6 +20,7 @@ import java.util.List;
 
 /**
  * 日志和异常处理切面
+ *
  * @Author chengpuhui
  * @Date 2021/12/24
  */
@@ -68,7 +69,7 @@ public class LogExceptionAspect {
         String inputArgJson = "";
         List<Object> argList = Lists.newArrayList();
         for (Object arg : args) {
-            if (arg instanceof ServletRequest || arg instanceof ServletResponse){
+            if (arg instanceof ServletRequest || arg instanceof ServletResponse) {
                 continue;
             }
             argList.add(arg);

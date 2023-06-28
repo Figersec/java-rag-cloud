@@ -52,4 +52,4 @@ mybatis-plus:
     #属性映射--开启驼峰命名
     map-underscore-to-camel-case: true
     cache-enabled: false
-  mapper-locations: ["classpath*:/mapper/**/*.xml"]
+  mapper-locations: [ "classpath*:/mapper/**/*.xml" ]
