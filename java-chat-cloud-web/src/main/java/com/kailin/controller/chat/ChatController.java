@@ -1,6 +1,5 @@
 package com.kailin.controller.chat;
 
-import com.kailin.proxy.vo.SysUserVo;
 import com.kailin.request.chat.ChatReq;
 import com.kailin.response.chat.ChatRes;
 import com.kailin.service.chat.IChatService;
@@ -15,8 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 聊天Controller
+ *
  * @author hujia
  */
 @RestController
@@ -32,14 +35,13 @@ public class ChatController {
 
     @PostMapping("/openChat")
     @ApiOperation(value = "创建聊天室")
-    public KpResponse<ChatRes> openChat(@RequestBody ChatReq chatRe) {
+    public KpResponse<Map<String, Object>> openChat(@RequestBody ChatReq chatRe) {
         ChatRes chat = iChatService.openChat(chatRe);
-        return KpResponse.data(chat);
+        // 封装结果
+        Map<String, Object> map = new HashMap<>(2);
+        map.put("loginUser", loginUserUtil.getCurrentUserDetail());
+        map.put("chat", chat);
+        return KpResponse.data(map);
     }
 
-    @PostMapping("/getCurrentUser")
-    @ApiOperation(value = "获取当前用户信息")
-    public KpResponse<SysUserVo> getCurrentUser() {
-        return KpResponse.data(loginUserUtil.getCurrentUserDetail());
-    }
 }
