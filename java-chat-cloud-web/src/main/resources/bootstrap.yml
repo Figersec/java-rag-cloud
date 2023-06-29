@@ -55,4 +55,13 @@ mybatis-plus:
     cache-enabled: false
   type-enums-package: com.kailin.**.enums
   mapper-locations: ["classpath*:/mapper/**/*.xml"]
+# 启动时公共配置注入Nacos
+kp:
+  common:
+    config:
+      nacos-server-addr: 192.168.20.186:18849
+      nacos-username: kp-common
+      nacos-password: kp-common
+      nacos-namespace: 11e6b1d8-62f7-44f1-96fb-bd814ef81133
+      nacos-timeout: 1000
 
