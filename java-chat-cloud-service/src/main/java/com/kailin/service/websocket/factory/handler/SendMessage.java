@@ -46,7 +46,7 @@ public class SendMessage extends AbstractRecoverTypeExecutor {
             }
             ChatLogReq build = ChatLogReq.builder()
                     .content(messageJson.getString("content"))
-                    .sendUserId(loginUserUtil.getCurrentUserThrow().getUserId())
+                    .sendUserId(messageJson.getString("sendUserId"))
                     .chatId(messageJson.getString("chatId"))
                     .meta(messageJson.getString("meta"))
                     .recall(CommonEnum.NO.getValue()).build();
