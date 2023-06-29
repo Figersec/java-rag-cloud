@@ -8,13 +8,16 @@ import com.kailin.dao.chat.mapper.ChatLogMapper;
 import com.kailin.enums.CommonEnum;
 import com.kailin.request.chatlog.ChatLogReq;
 import com.kailin.response.chatlog.ChatLogRes;
+import com.kailin.service.utils.LoginUserUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 实现类
@@ -28,6 +31,7 @@ public class IChatLogServiceImpl extends ServiceImpl<ChatLogMapper, ChatLog> imp
 
     private final ChatLogMapper chatLogMapper;
     private final ChatLogConvert chatLogConvert;
+    private final LoginUserUtil loginUserUtil;
 
 
     @Override
@@ -43,13 +47,20 @@ public class IChatLogServiceImpl extends ServiceImpl<ChatLogMapper, ChatLog> imp
 
 
     @Override
-    public List<ChatLogRes> getChatLogByChatId(String chatId) {
+    public Map<String, Object> getChatLogByChatId(String chatId) {
+        // 根据chatId查询聊天记录
         LambdaQueryWrapper<ChatLog> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(ChatLog::getChatId, chatId);
         queryWrapper.eq(ChatLog::getRecall, CommonEnum.NO.getValue());
         queryWrapper.orderByAsc(ChatLog::getCreateTime);
         List<ChatLog> chatLogs = chatLogMapper.selectList(queryWrapper);
-        return chatLogConvert.do2res(chatLogs);
+        List<ChatLogRes> chatLogResList = chatLogConvert.do2res(chatLogs);
+
+        // 封装结果
+        Map<String, Object> map = new HashMap<>(2);
+        map.put("loginUser", loginUserUtil.getCurrentUserDetail());
+        map.put("chatLogList", chatLogResList);
+        return map;
     }
 
     @Override

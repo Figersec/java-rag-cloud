@@ -37,9 +37,9 @@ public class ChatController {
         return KpResponse.data(chat);
     }
 
-    @PostMapping("/getCurrentUser")
-    @ApiOperation(value = "获取当前用户信息")
-    public KpResponse<SysUserVo> getCurrentUser() {
-        return KpResponse.data(loginUserUtil.getCurrentUserDetail());
-    }
+//    @PostMapping("/getCurrentUser")
+//    @ApiOperation(value = "获取当前用户信息")
+//    public KpResponse<SysUserVo> getCurrentUser() {
+//        return KpResponse.data(loginUserUtil.getCurrentUserDetail());
+//    }
 }
