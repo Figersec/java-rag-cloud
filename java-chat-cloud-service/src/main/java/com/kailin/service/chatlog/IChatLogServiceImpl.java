@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -34,6 +35,8 @@ public class IChatLogServiceImpl extends ServiceImpl<ChatLogMapper, ChatLog> imp
     public boolean insertChatLog(ChatLogReq chatLogReq) {
         ChatLog chatLog = chatLogConvert.req2do(chatLogReq);
         chatLog.setRecall(CommonEnum.NO.getValue());
+        chatLog.setUpdateTime(new Date());
+        chatLog.setCreateTime(new Date());
         chatLogMapper.insert(chatLog);
         return true;
     }
