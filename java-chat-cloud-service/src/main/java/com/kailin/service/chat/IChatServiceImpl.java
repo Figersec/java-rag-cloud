@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 实现类
@@ -40,8 +41,11 @@ public class IChatServiceImpl extends ServiceImpl<ChatMapper, Chat> implements I
         String chatId = chatReq.getChatId();
         // 没有则创建房间
         if(StringUtils.isBlank(chatId)){
-            if(CollectionUtils.isEmpty(chatReq.getChatUserList())){
+            if(CollectionUtils.isEmpty(chatReq.getChatUserList())||StringUtils.isBlank(chatReq.getChatUserList().get(0).getUserId())){
                 throw new KBException(KRMessageCommon.PARAM_ERROR_400, "创建聊天失败,缺少用户信息");
+            }
+            if(StringUtils.isBlank(chatReq.getChatName())){
+                throw new KBException(KRMessageCommon.PARAM_ERROR_400, "创建聊天失败,缺少聊天名称");
             }
             return createChat(chatReq);
         }
