@@ -50,7 +50,7 @@ public class LoginUserUtil {
 
     @Nullable
     public SysUserVo getLoginUser() {
-        return getLoginUserOptional().orElse(null);
+        return getLoginUserOptional().orElse(new SysUserVo());
     }
 
     public SysUserVo getCurrentUserThrow() {
