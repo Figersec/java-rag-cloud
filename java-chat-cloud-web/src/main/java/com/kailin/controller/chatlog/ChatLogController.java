@@ -1,6 +1,7 @@
 package com.kailin.controller.chatlog;
 
 import com.kailin.request.common.BaseIdRequest;
+import com.kailin.response.chatlog.ChatLogRes;
 import com.kailin.service.chatlog.IChatLogService;
 import com.kailinjt.middleware.kp.common.api.entity.KpResponse;
 import io.swagger.annotations.Api;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,8 +28,8 @@ public class ChatLogController {
 
     @PostMapping("/getChatLogByChatId")
     @ApiOperation(value = "根据chatId获取聊天记录")
-    public KpResponse<Map<String, Object>> openChat(@RequestBody BaseIdRequest baseIdRequest) {
-        Map<String, Object> chatLogResList = iChatLogService.getChatLogByChatId(baseIdRequest.getId());
+    public KpResponse<List<ChatLogRes>> openChat(@RequestBody BaseIdRequest baseIdRequest) {
+        List<ChatLogRes> chatLogResList = iChatLogService.getChatLogByChatId(baseIdRequest.getId());
         return KpResponse.data(chatLogResList);
     }
 }

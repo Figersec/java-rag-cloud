@@ -4,7 +4,6 @@ import com.kailin.request.chatlog.ChatLogReq;
 import com.kailin.response.chatlog.ChatLogRes;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author 杨松
@@ -26,7 +25,7 @@ public interface IChatLogService {
      * @param chatId
      * @return
      */
-    Map<String, Object> getChatLogByChatId(String chatId);
+    List<ChatLogRes> getChatLogByChatId(String chatId);
 
 
     /**
