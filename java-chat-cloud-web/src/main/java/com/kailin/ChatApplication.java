@@ -26,6 +26,7 @@ import org.springframework.util.StopWatch;
 @Slf4j
 @EnableConfigurationProperties
 public class ChatApplication {
+
     public static void main(String[] args) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -38,4 +39,6 @@ public class ChatApplication {
         log.info("API接口文档地址: http://127.0.0.1:{}{}/doc.html", port, contextPath);
         log.info("应用程序启动成功，总共花费【{}】秒,当前使用的命名空间(多个配置则互补):{}", stopWatch.getTotalTimeSeconds(), environment.getActiveProfiles());
     }
+
+
 }
