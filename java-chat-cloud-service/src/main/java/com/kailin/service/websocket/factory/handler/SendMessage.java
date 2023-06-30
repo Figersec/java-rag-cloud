@@ -40,7 +40,7 @@ public class SendMessage extends AbstractRecoverTypeExecutor {
                 chat.sendInfoExcludeUser(messageJson.toJSONString(),webSocketServer.getUserId());
             }
             ChatLogReq build = ChatLogReq.builder()
-                    .content(messageJson.toJSONString())
+                    .content(messageJson.getString("content"))
                     .sendUserId(webSocketServer.getUserId())
                     .chatId(messageJson.getString("chatId"))
                     .meta(messageJson.getString("meta"))
