@@ -32,21 +32,18 @@ public class SendMessage extends AbstractRecoverTypeExecutor {
 
     @Override
     public void execute(WebSocketServer webSocketServer, JSONObject messageJson) {
+        log.info("{}撤回了一条消息:{}",webSocketServer.getUserId(),messageJson);
+        String content = messageJson.getString("content");
+//        String sendUserId = messageJson.getString("sendUserId");
         try {
-            WebSocketGroup group = webSocketServer.getGroup();
-            String toUserId = messageJson.getString("toUserId");
-            if (StringUtils.isNotBlank(toUserId)) {
-                WebSocketServer target = group.getWebSocketServer(toUserId);
-                if (target != null) {
-                    // 发送消息
-                    target.sendMessage(messageJson.toJSONString());
-                } else {
-                    log.warn("请求的 userId：{} 不在分组 {} 中", toUserId, group.getChatId());
-                }
+            WebSocketGroup chat = webSocketServer.getGroup();
+            if (chat != null) {
+                // 发送消息
+                chat.sendInfoExcludeUser(content,webSocketServer.getUserId());
             }
             ChatLogReq build = ChatLogReq.builder()
-                    .content(messageJson.getString("content"))
-                    .sendUserId(messageJson.getString("sendUserId"))
+                    .content(content)
+                    .sendUserId(webSocketServer.getUserId())
                     .chatId(messageJson.getString("chatId"))
                     .meta(messageJson.getString("meta"))
                     .recall(CommonEnum.NO.getValue()).build();

@@ -8,6 +8,8 @@ import com.kailin.service.websocket.factory.AbstractRecoverTypeExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+
 /**
  * 心跳检测
  *
@@ -20,14 +22,11 @@ public class CheckHeart extends AbstractRecoverTypeExecutor {
     @Override
     public void execute(WebSocketServer webSocketServer, JSONObject messageJson) {
         try {
-            String fromUserId = webSocketServer.getUserId();
-            WebSocketGroup group = webSocketServer.getGroup();
-            // 心跳检测直接返回
-            WebSocketGroup targetGroup = WebSocketGroupManager.getGroup(group.getChatId());
-            if (targetGroup != null) {
-                targetGroup.sendInfoExcludeUser(messageJson.toJSONString(), fromUserId);
-            } else {
-                log.warn("请求的 chatId：{} 不存在", group.getChatId());
+            // 获取指定user的websocket对象
+            if (webSocketServer != null) {
+                log.info("检测心跳,userId{}",webSocketServer.getUserId());
+                // 心跳检测直接返回
+                webSocketServer.sendMessage(messageJson.toJSONString());
             }
         } catch (Exception e) {
             log.error("检测消息异常:{}", e);

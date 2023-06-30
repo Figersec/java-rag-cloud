@@ -24,6 +24,7 @@ public class RecallMessage extends AbstractRecoverTypeExecutor {
 
     @Override
     public void execute(WebSocketServer webSocketServer, JSONObject messageJson) {
+        log.info("{}撤回了一条消息:{}",webSocketServer.getUserId(),messageJson);
         try {
             WebSocketGroup group = webSocketServer.getGroup();
             if (null != group) {

@@ -24,8 +24,8 @@ public class WebSocketGroupManager {
         return webSocketGroupMap.computeIfAbsent(chatId, k -> new WebSocketGroup(chatId));
     }
 
-    public static WebSocketGroup getGroup(String groupName) {
-        return webSocketGroupMap.get(groupName);
+    public static WebSocketGroup getGroup(String groupId) {
+        return webSocketGroupMap.get(groupId);
     }
 
     /**
