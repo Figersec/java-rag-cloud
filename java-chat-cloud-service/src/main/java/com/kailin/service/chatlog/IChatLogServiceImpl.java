@@ -66,7 +66,7 @@ public class IChatLogServiceImpl extends ServiceImpl<ChatLogMapper, ChatLog> imp
             Map<String, GetUserListInfoVO> userMap = orgProxy.userMapByIds(req);
             for (ChatLogRes chatLogRes : chatLogResList) {
                 if(StringUtils.isNotBlank(chatLogRes.getSendUserId())){
-                    chatLogRes.setUsername(Optional.ofNullable(userMap.get(chatLogRes.getSendUserId()).getUserName()).orElse(""));
+                    chatLogRes.setUsername(Optional.ofNullable(userMap.get(chatLogRes.getSendUserId())).orElse(new GetUserListInfoVO()).getUserName());
                 }
             }
         }else{
