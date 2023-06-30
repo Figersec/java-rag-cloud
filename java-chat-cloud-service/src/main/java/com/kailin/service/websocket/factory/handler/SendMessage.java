@@ -32,17 +32,15 @@ public class SendMessage extends AbstractRecoverTypeExecutor {
 
     @Override
     public void execute(WebSocketServer webSocketServer, JSONObject messageJson) {
-        log.info("{}撤回了一条消息:{}",webSocketServer.getUserId(),messageJson);
-        String content = messageJson.getString("content");
-//        String sendUserId = messageJson.getString("sendUserId");
+        log.info("{}发送了一条消息:{}",webSocketServer.getUserId(),messageJson);
         try {
             WebSocketGroup chat = webSocketServer.getGroup();
             if (chat != null) {
                 // 发送消息
-                chat.sendInfoExcludeUser(content,webSocketServer.getUserId());
+                chat.sendInfoExcludeUser(messageJson.toJSONString(),webSocketServer.getUserId());
             }
             ChatLogReq build = ChatLogReq.builder()
-                    .content(content)
+                    .content(messageJson.toJSONString())
                     .sendUserId(webSocketServer.getUserId())
                     .chatId(messageJson.getString("chatId"))
                     .meta(messageJson.getString("meta"))
