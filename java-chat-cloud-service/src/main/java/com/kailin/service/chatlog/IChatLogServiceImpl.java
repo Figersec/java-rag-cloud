@@ -6,18 +6,24 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kailin.dao.chat.entity.ChatLog;
 import com.kailin.dao.chat.mapper.ChatLogMapper;
 import com.kailin.enums.CommonEnum;
+import com.kailin.proxy.OrgProxy;
+import com.kailin.proxy.request.GetUserListByIdsReq;
+import com.kailin.proxy.vo.GetUserListInfoVO;
 import com.kailin.request.chatlog.ChatLogReq;
 import com.kailin.response.chatlog.ChatLogRes;
 import com.kailin.service.utils.LoginUserUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * 实现类
@@ -31,7 +37,7 @@ public class IChatLogServiceImpl extends ServiceImpl<ChatLogMapper, ChatLog> imp
 
     private final ChatLogMapper chatLogMapper;
     private final ChatLogConvert chatLogConvert;
-    private final LoginUserUtil loginUserUtil;
+    private final OrgProxy orgProxy;
 
 
     @Override
@@ -54,7 +60,20 @@ public class IChatLogServiceImpl extends ServiceImpl<ChatLogMapper, ChatLog> imp
         queryWrapper.eq(ChatLog::getRecall, CommonEnum.NO.getValue());
         queryWrapper.orderByAsc(ChatLog::getCreateTime);
         List<ChatLog> chatLogs = chatLogMapper.selectList(queryWrapper);
-        return chatLogConvert.do2res(chatLogs);
+        List<ChatLogRes> chatLogResList = chatLogConvert.do2res(chatLogs);
+        // 填充用户名，// 正确来讲，这里应该还要加个用户来源
+        if (!CollectionUtils.isEmpty(chatLogResList)) {
+            List<String> userIds = chatLogResList.stream().map(ChatLogRes::getSendUserId).distinct().collect(Collectors.toList());
+            GetUserListByIdsReq req = new GetUserListByIdsReq();
+            req.setIdList(userIds);
+            Map<String, GetUserListInfoVO> userMap = orgProxy.userMapByIds(req);
+            for (ChatLogRes chatLogRes : chatLogResList) {
+                if(StringUtils.isNotBlank(chatLogRes.getSendUserId())){
+                    chatLogRes.setUsername(Optional.ofNullable(userMap.get(chatLogRes.getSendUserId()).getUserName()).orElse(""));
+                }
+            }
+        }
+        return chatLogResList;
     }
 
     @Override

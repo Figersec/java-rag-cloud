@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author 杨松
@@ -28,7 +27,7 @@ public class ChatLogController {
 
     @PostMapping("/getChatLogByChatId")
     @ApiOperation(value = "根据chatId获取聊天记录")
-    public KpResponse<List<ChatLogRes>> openChat(@RequestBody BaseIdRequest baseIdRequest) {
+    public KpResponse<List<ChatLogRes>> getChatLogByChatId(@RequestBody BaseIdRequest baseIdRequest) {
         List<ChatLogRes> chatLogResList = iChatLogService.getChatLogByChatId(baseIdRequest.getId());
         return KpResponse.data(chatLogResList);
     }

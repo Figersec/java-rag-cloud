@@ -3,7 +3,6 @@ package com.kailin.controller.chat;
 import com.kailin.request.chat.ChatReq;
 import com.kailin.response.chat.ChatRes;
 import com.kailin.service.chat.IChatService;
-import com.kailin.service.utils.LoginUserUtil;
 import com.kailinjt.middleware.kp.common.api.entity.KpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -27,8 +26,6 @@ public class ChatController {
 
     @Autowired
     private IChatService iChatService;
-    @Autowired
-    private LoginUserUtil loginUserUtil;
 
     @PostMapping("/openChat")
     @ApiOperation(value = "创建聊天室")
