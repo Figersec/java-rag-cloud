@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * WebSocket 分组
+ * WebSocket 会话组
  *
  * @author 杨松
  */
@@ -38,7 +38,7 @@ public class WebSocketGroup {
     }
 
     /**
-     * 向分组中的所有客户端发送消息
+     * 向会话组中的所有客户端发送消息
      *
      * @param message 待发送的消息
      */
@@ -49,7 +49,7 @@ public class WebSocketGroup {
     }
 
     /**
-     * 发送消息给分组内所有用户，排除指定用户
+     * 发送消息给会话组内所有用户，排除指定用户
      *
      * @param message       消息内容
      * @param excludeUserId 要排除的用户 ID

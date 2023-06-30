@@ -40,7 +40,7 @@ public class WebSocketServer {
     private String userId;
 
     /**
-     * WebSocketServer 所在的分组
+     * WebSocketServer 所在的会话组
      */
     private WebSocketGroup group;
 
@@ -52,13 +52,13 @@ public class WebSocketServer {
     public void onOpen(Session session, @PathParam("chatId") String chatId, @PathParam("userId") String userId) {
         this.session = session;
         this.userId = userId;
-        // 获取或者创建当前分组
+        // 获取或者创建当前会话组
         group = WebSocketGroupManager.getOrCreateGroup(chatId);
-        // 把当前 WebSocketServer 对象添加到所在分组
+        // 把当前 WebSocketServer 对象添加到所在会话组
         group.addWebSocketServer(userId, this);
         // 在线人数加一
         int count = ONLINE_COUNT.incrementAndGet();
-        log.info("用户 {} 连接成功，分组：{}，当前在线人数：{}", userId, group.getChatId(), count);
+        log.info("用户 {} 连接成功，会话组：{}，当前在线人数：{}", userId, group.getChatId(), count);
     }
 
     /**
@@ -66,11 +66,11 @@ public class WebSocketServer {
      */
     @OnClose
     public void onClose() {
-        // 把 WebSocketServer 对象从所在分组移除
+        // 把 WebSocketServer 对象从所在会话组移除
         group.removeWebSocketServer(userId);
         // 在线人数减一
         int count = ONLINE_COUNT.decrementAndGet();
-        log.info("用户 {} 退出，分组：{}，当前在线人数：{}", userId, group.getChatId(), count);
+        log.info("用户 {} 退出，会话组：{}，当前在线人数：{}", userId, group.getChatId(), count);
     }
 
     /**
