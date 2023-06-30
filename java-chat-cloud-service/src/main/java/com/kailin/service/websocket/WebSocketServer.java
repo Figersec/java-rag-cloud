@@ -5,6 +5,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.kailin.enums.OperationTypeEnum;
 import com.kailin.service.websocket.factory.MessageFactory;
+import com.kailinjt.middleware.kp.common.api.entity.KRMessageCommon;
+import com.kailinjt.middleware.kp.common.api.exception.KBException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -76,20 +78,27 @@ public class WebSocketServer {
      *
      * @param message 客户端发送过来的消息
      */
-    @OnMessage
+    @OnMessage(maxMessageSize = 10240000 )
     public void onMessage(String message) {
         log.info("收到消息：{}", message);
         if (StringUtils.isBlank(message)) {
             log.info("消息为空,中止转发");
             return;
         }
+        JSONObject messageJson;
         try {
-            JSONObject messageJson = JSON.parseObject(message);
+            messageJson = JSON.parseObject(message);
+        } catch (Exception e) {
+            log.error("参数有误,转换Json对象失败: {}", e);
+            throw new KBException(KRMessageCommon.PARAM_ERROR_400, "参数有误,转换Json对象失败");
+        }
+        try {
             OperationTypeEnum operationTypeEnum = OperationTypeEnum.getEnumByValue(messageJson.getString("operationType"));
             MessageFactory messageFactory = SpringUtil.getBean(MessageFactory.class);
             messageFactory.getExecutor(operationTypeEnum).execute(group.getWebSocketServer(this.userId), messageJson);
         } catch (Exception e) {
-            log.error("websocket发送失败: {}", e);
+            log.error("消息发送失败: {}", e);
+            throw new KBException(KRMessageCommon.FAILED, "消息发送失败");
         }
 
     }
