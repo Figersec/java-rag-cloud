@@ -30,18 +30,12 @@ public class ChatController {
 
     @Autowired
     private IChatService iChatService;
-    @Autowired
-    private LoginUserUtil loginUserUtil;
 
     @PostMapping("/openChat")
     @ApiOperation(value = "创建聊天室")
-    public KpResponse<Map<String, Object>> openChat(@RequestBody ChatReq chatRe) {
+    public KpResponse<ChatRes> openChat(@RequestBody ChatReq chatRe) {
         ChatRes chat = iChatService.openChat(chatRe);
-        // 封装结果
-        Map<String, Object> map = new HashMap<>(2);
-        map.put("loginUser", loginUserUtil.getCurrentUserDetail());
-        map.put("chat", chat);
-        return KpResponse.data(map);
+        return KpResponse.data(chat);
     }
 
 }
