@@ -14,9 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * 聊天Controller
  *
@@ -35,13 +32,9 @@ public class ChatController {
 
     @PostMapping("/openChat")
     @ApiOperation(value = "创建聊天室")
-    public KpResponse<Map<String, Object>> openChat(@RequestBody ChatReq chatRe) {
+    public KpResponse<ChatRes> openChat(@RequestBody ChatReq chatRe) {
         ChatRes chat = iChatService.openChat(chatRe);
-        // 封装结果
-        Map<String, Object> map = new HashMap<>(2);
-        map.put("loginUser", loginUserUtil.getCurrentUserDetail());
-        map.put("chat", chat);
-        return KpResponse.data(map);
+        return KpResponse.data(chat);
     }
 
 }
