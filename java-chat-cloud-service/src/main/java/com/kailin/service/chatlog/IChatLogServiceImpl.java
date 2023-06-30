@@ -19,10 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -72,6 +69,8 @@ public class IChatLogServiceImpl extends ServiceImpl<ChatLogMapper, ChatLog> imp
                     chatLogRes.setUsername(Optional.ofNullable(userMap.get(chatLogRes.getSendUserId()).getUserName()).orElse(""));
                 }
             }
+        }else{
+            chatLogResList = new ArrayList<>();
         }
         return chatLogResList;
     }
