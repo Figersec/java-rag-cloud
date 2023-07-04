@@ -16,11 +16,23 @@
     <sql id="Base_Column_List">
         id, user_id, chat_id, is_read, create_time, update_time
     </sql>
-    <select id="getUserReadRecordList" resultMap="BaseResultMap">
+
+    <select id="getChatReadRecordListByChatId" resultMap="BaseResultMap">
         SELECT
             <include refid="Base_Column_List" />
         FROM chat_read_record
-        WHERE chat_id = #{do.chatId}
+        WHERE chat_id = #{chatId}
     </select>
+
+    <update id="updateReadRecord">
+        UPDATE chat_read_record
+        SET is_read = 1,update_time = now()
+        WHERE
+            chat_id = #{chatId}
+            AND user_id IN
+        <foreach collection="userIdList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
 
 </mapper>

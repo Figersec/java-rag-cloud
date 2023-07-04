@@ -1,6 +1,7 @@
 package com.kailin.controller.chatreadrecord;
 
-import com.kailin.request.chatreadrecord.ChatReadRecordReq;
+import com.kailin.request.chatreadrecord.UpdateChatRecordReq;
+import com.kailin.request.common.BaseIdRequest;
 import com.kailin.response.chatreadrecord.ChatReadRecordRes;
 import com.kailin.service.chatreadrecord.IChatReadRecordService;
 import com.kailinjt.middleware.kp.common.api.entity.KpResponse;
@@ -25,10 +26,17 @@ public class ChaReadRecordController {
 
     private final IChatReadRecordService iChatReadRecordService;
 
-    @PostMapping("/getUserReadRecordList")
+    @PostMapping("/getChatReadRecordListByChatId")
     @ApiOperation(value = "获取会话组每个用户阅读情况")
-    public KpResponse<List<ChatReadRecordRes>> getUserReadRecordList(@RequestBody ChatReadRecordReq chatReadRecordReq) {
-        List<ChatReadRecordRes> chatLogResList = iChatReadRecordService.getUserReadRecordList(chatReadRecordReq);
+    public KpResponse<List<ChatReadRecordRes>> getChatReadRecordListByChatId(@RequestBody BaseIdRequest baseIdRequest) {
+        List<ChatReadRecordRes> chatLogResList = iChatReadRecordService.getChatReadRecordListByChatId(baseIdRequest.getId());
         return KpResponse.data(chatLogResList);
+    }
+
+    @PostMapping("/updateRead")
+    @ApiOperation(value = "更新为已读")
+    public KpResponse<Boolean> updateReadRecord(@RequestBody UpdateChatRecordReq updateChatRecordReq) {
+        Boolean success =  iChatReadRecordService.updateReadRecord(updateChatRecordReq);
+        return KpResponse.data(success);
     }
 }

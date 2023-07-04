@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kailin.dao.chat.entity.ChatReadRecord;
 import com.kailin.dao.chat.mapper.ChatReadRecordMapper;
 import com.kailin.request.chatreadrecord.ChatReadRecordReq;
+import com.kailin.request.chatreadrecord.UpdateChatRecordReq;
 import com.kailin.response.chatreadrecord.ChatReadRecordRes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +27,13 @@ public class IChatReadRecordServiceImpl extends ServiceImpl<ChatReadRecordMapper
 
 
     @Override
-    public List<ChatReadRecordRes> getUserReadRecordList(ChatReadRecordReq chatReadRecordReq) {
-        ChatReadRecord chatReadRecord = chatReadRecordConvert.req2do(chatReadRecordReq);
-        List<ChatReadRecord> chatReadRecordList = chatReadRecordMapper.getUserReadRecordList(chatReadRecord);
+    public List<ChatReadRecordRes> getChatReadRecordListByChatId(String chatId) {
+        List<ChatReadRecord> chatReadRecordList = chatReadRecordMapper.getChatReadRecordListByChatId(chatId);
         return chatReadRecordConvert.do2res(chatReadRecordList);
+    }
+
+    @Override
+    public boolean updateReadRecord(UpdateChatRecordReq updateChatRecordReq) {
+        return chatReadRecordMapper.updateReadRecord(updateChatRecordReq.getChatId(),updateChatRecordReq.getUserIdList());
     }
 }
