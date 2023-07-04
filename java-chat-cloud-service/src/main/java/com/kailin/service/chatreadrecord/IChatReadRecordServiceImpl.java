@@ -1,0 +1,34 @@
+package com.kailin.service.chatreadrecord;
+
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.kailin.dao.chat.entity.ChatReadRecord;
+import com.kailin.dao.chat.mapper.ChatReadRecordMapper;
+import com.kailin.request.chatreadrecord.ChatReadRecordReq;
+import com.kailin.response.chatreadrecord.ChatReadRecordRes;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+/**
+ * 实现类
+ *
+ * @author 杨松
+ */
+@Service
+@Slf4j
+@RequiredArgsConstructor
+public class IChatReadRecordServiceImpl extends ServiceImpl<ChatReadRecordMapper, ChatReadRecord> implements IChatReadRecordService {
+
+    private final ChatReadRecordMapper chatReadRecordMapper;
+    private final ChatReadRecordConvert chatReadRecordConvert;
+
+
+    @Override
+    public List<ChatReadRecordRes> getUserReadRecordList(ChatReadRecordReq chatReadRecordReq) {
+        ChatReadRecord chatReadRecord = chatReadRecordConvert.req2do(chatReadRecordReq);
+        List<ChatReadRecord> chatReadRecordList = chatReadRecordMapper.getUserReadRecordList(chatReadRecord);
+        return chatReadRecordConvert.do2res(chatReadRecordList);
+    }
+}
