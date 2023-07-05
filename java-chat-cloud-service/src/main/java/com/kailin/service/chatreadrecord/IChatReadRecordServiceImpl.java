@@ -33,8 +33,9 @@ public class IChatReadRecordServiceImpl extends ServiceImpl<ChatReadRecordMapper
 
 
     @Override
-    public List<ChatReadRecordRes> getChatReadRecordListByChatLogId(String chatLogId) {
-        List<ChatReadRecord> chatReadRecordList = chatReadRecordMapper.getChatReadRecordListByChatLogId(chatLogId);
+    public List<ChatReadRecordRes> getChatReadRecordListByCondition(ChatReadRecordReq chatReadRecordReq) {
+        ChatReadRecord chatReadRecord = chatReadRecordConvert.req2do(chatReadRecordReq);
+        List<ChatReadRecord> chatReadRecordList = chatReadRecordMapper.getChatReadRecordListByCondition(chatReadRecord);
         return chatReadRecordConvert.do2res(chatReadRecordList);
     }
 

@@ -18,11 +18,22 @@
         id, user_id, chat_id, chat_log_id, is_read, create_time, update_time
     </sql>
 
-    <select id="getChatReadRecordListByChatLogId" resultMap="BaseResultMap">
+    <select id="getChatReadRecordListByCondition" resultMap="BaseResultMap">
         SELECT
             <include refid="Base_Column_List" />
         FROM chat_read_record
-        WHERE chat_log_id = #{chatLogId}
+        <where>
+            <if test="do.chatId != null and do.chatId != ''">
+                chat_id = #{do.chatId}
+            </if>
+            <if test="do.chatLogId != null and do.chatLogId != ''">
+                chat_log_id = #{do.chatLogId}
+            </if>
+            <if test="do.userId != null and do.userId != ''">
+                user_id = #{do.userId}
+            </if>
+        </where>
+
     </select>
 
     <update id="updateReadRecord">

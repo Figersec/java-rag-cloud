@@ -1,7 +1,7 @@
 package com.kailin.controller.chatreadrecord;
 
+import com.kailin.request.chatreadrecord.ChatReadRecordReq;
 import com.kailin.request.chatreadrecord.UpdateChatRecordReq;
-import com.kailin.request.common.BaseIdRequest;
 import com.kailin.response.chatreadrecord.ChatReadRecordRes;
 import com.kailin.service.chatreadrecord.IChatReadRecordService;
 import com.kailinjt.middleware.kp.common.api.entity.KpResponse;
@@ -26,10 +26,10 @@ public class ChaReadRecordController {
 
     private final IChatReadRecordService iChatReadRecordService;
 
-    @PostMapping("/getChatReadRecordListByChatLogId")
+    @PostMapping("/getChatReadRecordListByCondition")
     @ApiOperation(value = "获取会话组每个用户阅读情况")
-    public KpResponse<List<ChatReadRecordRes>> getChatReadRecordListByChatLogId(@RequestBody BaseIdRequest baseIdRequest) {
-        List<ChatReadRecordRes> chatLogResList = iChatReadRecordService.getChatReadRecordListByChatLogId(baseIdRequest.getId());
+    public KpResponse<List<ChatReadRecordRes>> getChatReadRecordListByCondition(@RequestBody ChatReadRecordReq chatReadRecordReq) {
+        List<ChatReadRecordRes> chatLogResList = iChatReadRecordService.getChatReadRecordListByCondition(chatReadRecordReq);
         return KpResponse.data(chatLogResList);
     }
 

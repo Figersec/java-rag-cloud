@@ -18,10 +18,10 @@ public interface ChatReadRecordMapper extends BaseMapper<ChatReadRecord> {
 
     /**
      * 获取会话组每个用户阅读情况
-     * @param chatLogId
+     * @param chatReadRecord
      * @return
      */
-    List<ChatReadRecord> getChatReadRecordListByChatLogId(@Param("chatLogId") String chatLogId);
+    List<ChatReadRecord> getChatReadRecordListByCondition(@Param("do") ChatReadRecord chatReadRecord);
 
     /**
      * 更新为已读
