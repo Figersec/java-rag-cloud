@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.kailin.dao.chat.entity.ChatReadRecord;
 import com.kailin.dao.chat.mapper.ChatReadRecordMapper;
+import com.kailin.request.chatreadrecord.ChatReadRecordBatchReq;
 import com.kailin.request.chatreadrecord.ChatReadRecordReq;
 import com.kailin.request.chatreadrecord.UpdateChatRecordReq;
 import com.kailin.response.chatreadrecord.ChatReadRecordRes;
@@ -35,7 +36,7 @@ public class IChatReadRecordServiceImpl extends ServiceImpl<ChatReadRecordMapper
     @Override
     public List<ChatReadRecordRes> getChatReadRecordListByCondition(ChatReadRecordReq chatReadRecordReq) {
         ChatReadRecord chatReadRecord = chatReadRecordConvert.req2do(chatReadRecordReq);
-        List<ChatReadRecord> chatReadRecordList = chatReadRecordMapper.getChatReadRecordListByCondition(chatReadRecord);
+        List<ChatReadRecord> chatReadRecordList = chatReadRecordMapper.getChatReadRecordListByCondition(chatReadRecord,chatReadRecordReq.getChatIdList());
         return chatReadRecordConvert.do2res(chatReadRecordList);
     }
 

@@ -1,5 +1,6 @@
 package com.kailin.service.chatreadrecord;
 
+import com.kailin.request.chatreadrecord.ChatReadRecordBatchReq;
 import com.kailin.request.chatreadrecord.ChatReadRecordReq;
 import com.kailin.request.chatreadrecord.UpdateChatRecordReq;
 import com.kailin.response.chatreadrecord.ChatReadRecordRes;
@@ -19,6 +20,7 @@ public interface IChatReadRecordService {
      */
     List<ChatReadRecordRes> getChatReadRecordListByCondition(ChatReadRecordReq readRecordReq);
 
+
     /**
      * 更新为已读
      * @param updateChatRecordReq
@@ -32,4 +34,6 @@ public interface IChatReadRecordService {
      * @return
      */
     boolean saveChatReadRecord(ChatReadRecordReq chatReadRecordReq);
+
+
 }

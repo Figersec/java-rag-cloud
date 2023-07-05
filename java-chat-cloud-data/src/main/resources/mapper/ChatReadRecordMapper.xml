@@ -32,6 +32,12 @@
             <if test="do.userId != null and do.userId != ''">
                 user_id = #{do.userId}
             </if>
+            <if test="chatIdList != null and chatIdList.size() > 0">
+                AND chat_id IN
+                <foreach collection="chatIdList" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
         </where>
 
     </select>

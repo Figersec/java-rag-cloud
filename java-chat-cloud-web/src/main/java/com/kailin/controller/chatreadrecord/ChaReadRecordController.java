@@ -1,5 +1,6 @@
 package com.kailin.controller.chatreadrecord;
 
+import com.kailin.request.chatreadrecord.ChatReadRecordBatchReq;
 import com.kailin.request.chatreadrecord.ChatReadRecordReq;
 import com.kailin.request.chatreadrecord.UpdateChatRecordReq;
 import com.kailin.response.chatreadrecord.ChatReadRecordRes;
@@ -32,6 +33,7 @@ public class ChaReadRecordController {
         List<ChatReadRecordRes> chatLogResList = iChatReadRecordService.getChatReadRecordListByCondition(chatReadRecordReq);
         return KpResponse.data(chatLogResList);
     }
+
 
     @PostMapping("/updateRead")
     @ApiOperation(value = "更新为已读")
