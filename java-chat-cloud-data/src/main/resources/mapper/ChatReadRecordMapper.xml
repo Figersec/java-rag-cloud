@@ -29,7 +29,7 @@
         UPDATE chat_read_record
         SET is_read = 1,update_time = now()
         WHERE
-            chat_log_id = #{chatLogId}
+            chat_id = #{chatId}
             AND user_id IN
         <foreach collection="userIdList" index="index" item="item" open="(" separator="," close=")">
             #{item}

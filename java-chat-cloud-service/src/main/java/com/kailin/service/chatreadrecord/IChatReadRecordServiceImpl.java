@@ -40,7 +40,7 @@ public class IChatReadRecordServiceImpl extends ServiceImpl<ChatReadRecordMapper
 
     @Override
     public boolean updateReadRecord(UpdateChatRecordReq updateChatRecordReq) {
-        return chatReadRecordMapper.updateReadRecord(updateChatRecordReq.getChatLogId(), updateChatRecordReq.getUserIdList());
+        return chatReadRecordMapper.updateReadRecord(updateChatRecordReq.getChatId(), updateChatRecordReq.getUserIdList());
     }
 
     @Override
@@ -52,7 +52,10 @@ public class IChatReadRecordServiceImpl extends ServiceImpl<ChatReadRecordMapper
             List<ChatReadRecord> chatReadRecordList = Lists.newArrayList();
             for (ChatUserRes chatUserRes : userListByChatId) {
                 ChatReadRecord chatReadRecord = new ChatReadRecord();
-                chatReadRecord.setUserId(chatUserRes.getUserId());
+                // 排除发送人
+                if(!chatUserRes.getUserId().equals(chatReadRecordReq.getUserId())){
+                    chatReadRecord.setUserId(chatUserRes.getUserId());
+                }
                 chatReadRecord.setChatId(chatReadRecordReq.getChatId());
                 chatReadRecord.setChatLogId(chatReadRecordReq.getChatLogId());
                 chatReadRecord.setIsRead((byte) 0);

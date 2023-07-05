@@ -25,10 +25,10 @@ public interface ChatReadRecordMapper extends BaseMapper<ChatReadRecord> {
 
     /**
      * 更新为已读
-     * @param chatLogId
+     * @param chatId
      * @param userIdList
      * @return
      */
-    boolean updateReadRecord(@Param("chatLogId") String chatLogId, @Param("userIdList") List<String> userIdList);
+    boolean updateReadRecord(@Param("chatId") String chatId, @Param("userIdList") List<String> userIdList);
 
 }
