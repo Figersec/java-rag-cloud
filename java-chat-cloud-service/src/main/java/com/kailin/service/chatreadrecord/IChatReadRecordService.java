@@ -14,10 +14,10 @@ public interface IChatReadRecordService {
 
     /**
      * 获取会话组每个用户阅读情况
-     * @param chatId
+     * @param chatLogId
      * @return
      */
-    List<ChatReadRecordRes> getChatReadRecordListByChatId(String chatId);
+    List<ChatReadRecordRes> getChatReadRecordListByChatLogId(String chatLogId);
 
     /**
      * 更新为已读
@@ -25,4 +25,11 @@ public interface IChatReadRecordService {
      * @return
      */
     boolean updateReadRecord(UpdateChatRecordReq updateChatRecordReq);
+
+    /**
+     * 保存消息阅读记录（发送消息时初始化该记录）
+     * @param chatReadRecordReq
+     * @return
+     */
+    boolean saveChatReadRecord(ChatReadRecordReq chatReadRecordReq);
 }

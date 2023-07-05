@@ -1,14 +1,10 @@
 package com.kailin.service.websocket.factory.handler;
 
 import com.alibaba.fastjson.JSONObject;
-import com.kailin.service.websocket.WebSocketGroup;
-import com.kailin.service.websocket.WebSocketGroupManager;
 import com.kailin.service.websocket.WebSocketServer;
 import com.kailin.service.websocket.factory.AbstractRecoverTypeExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import java.util.Map;
 
 /**
  * 心跳检测

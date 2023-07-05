@@ -38,6 +38,9 @@ public class ChatReadRecord extends Model<ChatReadRecord> {
     @ApiModelProperty(value = "会话组id")
     private String chatId;
 
+    @ApiModelProperty(value = "聊天记录id")
+    private String chatLogId;
+
     @ApiModelProperty(value = "是否已读 0否 1是")
     private Byte isRead;
 

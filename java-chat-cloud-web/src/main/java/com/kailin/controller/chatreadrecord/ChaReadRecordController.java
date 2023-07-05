@@ -26,10 +26,10 @@ public class ChaReadRecordController {
 
     private final IChatReadRecordService iChatReadRecordService;
 
-    @PostMapping("/getChatReadRecordListByChatId")
+    @PostMapping("/getChatReadRecordListByChatLogId")
     @ApiOperation(value = "获取会话组每个用户阅读情况")
-    public KpResponse<List<ChatReadRecordRes>> getChatReadRecordListByChatId(@RequestBody BaseIdRequest baseIdRequest) {
-        List<ChatReadRecordRes> chatLogResList = iChatReadRecordService.getChatReadRecordListByChatId(baseIdRequest.getId());
+    public KpResponse<List<ChatReadRecordRes>> getChatReadRecordListByChatLogId(@RequestBody BaseIdRequest baseIdRequest) {
+        List<ChatReadRecordRes> chatLogResList = iChatReadRecordService.getChatReadRecordListByChatLogId(baseIdRequest.getId());
         return KpResponse.data(chatLogResList);
     }
 

@@ -5,8 +5,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.kailin.enums.OperationTypeEnum;
 import com.kailin.service.websocket.factory.MessageFactory;
-import com.kailinjt.middleware.kp.common.api.entity.KRMessageCommon;
-import com.kailinjt.middleware.kp.common.api.exception.KBException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;

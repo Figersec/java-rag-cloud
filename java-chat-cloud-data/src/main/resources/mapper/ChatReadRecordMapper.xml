@@ -7,6 +7,7 @@
         <id column="id" property="id" />
         <result column="user_id" property="userId" />
         <result column="chat_id" property="chatId" />
+        <result column="chat_log_id" property="chatLogId" />
         <result column="is_read" property="isRead" />
         <result column="create_time" property="createTime" />
         <result column="update_time" property="updateTime" />
@@ -14,21 +15,21 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, user_id, chat_id, is_read, create_time, update_time
+        id, user_id, chat_id, chat_log_id, is_read, create_time, update_time
     </sql>
 
-    <select id="getChatReadRecordListByChatId" resultMap="BaseResultMap">
+    <select id="getChatReadRecordListByChatLogId" resultMap="BaseResultMap">
         SELECT
             <include refid="Base_Column_List" />
         FROM chat_read_record
-        WHERE chat_id = #{chatId}
+        WHERE chat_log_id = #{chatLogId}
     </select>
 
     <update id="updateReadRecord">
         UPDATE chat_read_record
         SET is_read = 1,update_time = now()
         WHERE
-            chat_id = #{chatId}
+            chat_log_id = #{chatLogId}
             AND user_id IN
         <foreach collection="userIdList" index="index" item="item" open="(" separator="," close=")">
             #{item}

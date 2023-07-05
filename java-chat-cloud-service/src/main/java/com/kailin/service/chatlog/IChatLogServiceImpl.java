@@ -11,7 +11,6 @@ import com.kailin.proxy.request.GetUserListByIdsReq;
 import com.kailin.proxy.vo.GetUserListInfoVO;
 import com.kailin.request.chatlog.ChatLogReq;
 import com.kailin.response.chatlog.ChatLogRes;
-import com.kailin.service.utils.LoginUserUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
