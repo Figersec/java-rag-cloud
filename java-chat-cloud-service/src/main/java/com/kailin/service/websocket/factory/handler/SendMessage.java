@@ -10,6 +10,7 @@ import com.kailin.service.chatreadrecord.IChatReadRecordService;
 import com.kailin.service.websocket.WebSocketGroup;
 import com.kailin.service.websocket.WebSocketServer;
 import com.kailin.service.websocket.factory.AbstractRecoverTypeExecutor;
+import com.kailin.util.SnowflakeIdUtil;
 import com.kailinjt.middleware.kp.common.util.redisson.lock.annotation.RedisLock;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,27 +33,30 @@ public class SendMessage extends AbstractRecoverTypeExecutor {
     @Override
     @RedisLock(key = "#webSocketServer.userId")
     public void execute(WebSocketServer webSocketServer, JSONObject messageJson) {
-        log.info("{}发送了一条消息:{}", webSocketServer.getUserId(), messageJson);
+        log.info("{}在会话组:{},发送了一条消息:{}", webSocketServer.getUserId(),webSocketServer.getGroup().getChatId(), messageJson);
         try {
             WebSocketGroup chat = webSocketServer.getGroup();
-            if (chat != null) {
-                // 发送消息
-                chat.sendInfoExcludeUser(messageJson.toJSONString(), webSocketServer.getUserId());
+            if (chat == null) {
+                log.info("没有获取到会话组,chat：{}" , chat);
+                return;
             }
-            String chatId = messageJson.getString("chatId");
+            // 发送消息
+            chat.sendInfoExcludeUser(messageJson.toJSONString(), webSocketServer.getUserId());
+
             ChatLogReq chatLog = ChatLogReq.builder()
+                    .id(SnowflakeIdUtil.generateIdStr())
                     .content(messageJson.getString("content"))
                     .sendUserId(webSocketServer.getUserId())
-                    .chatId(chatId)
+                    .chatId(chat.getChatId())
                     .meta(messageJson.getString("meta"))
                     .recall(CommonEnum.NO.getValue()).build();
-            ChatLog chatLogResul = iChatLogService.insertChatLog(chatLog);
+            iChatLogService.insertChatLog(chatLog);
 
 
             ChatReadRecordReq chatReadRecord = ChatReadRecordReq.builder()
-                    .chatId(chatId)
+                    .chatId(chat.getChatId())
                     .userId(webSocketServer.getUserId())
-                    .chatLogId(chatLogResul.getId()).build();
+                    .chatLogId(chatLog.getId()).build();
             iChatReadRecordService.saveChatReadRecord(chatReadRecord);
         } catch (Exception e) {
             log.error("发送消息异常:{}", e);
