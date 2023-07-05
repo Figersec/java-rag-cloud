@@ -38,13 +38,13 @@ public class IChatLogServiceImpl extends ServiceImpl<ChatLogMapper, ChatLog> imp
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean insertChatLog(ChatLogReq chatLogReq) {
+    public ChatLog insertChatLog(ChatLogReq chatLogReq) {
         ChatLog chatLog = chatLogConvert.req2do(chatLogReq);
         chatLog.setRecall(CommonEnum.NO.getValue());
         chatLog.setUpdateTime(new Date());
         chatLog.setCreateTime(new Date());
         chatLogMapper.insert(chatLog);
-        return true;
+        return chatLog;
     }
 
 

@@ -1,6 +1,7 @@
 package com.kailin.service.websocket.factory.handler;
 
 import com.alibaba.fastjson.JSONObject;
+import com.kailin.dao.chat.entity.ChatLog;
 import com.kailin.enums.CommonEnum;
 import com.kailin.request.chatlog.ChatLogReq;
 import com.kailin.request.chatreadrecord.ChatReadRecordReq;
@@ -45,13 +46,13 @@ public class SendMessage extends AbstractRecoverTypeExecutor {
                     .chatId(chatId)
                     .meta(messageJson.getString("meta"))
                     .recall(CommonEnum.NO.getValue()).build();
-            iChatLogService.insertChatLog(chatLog);
+            ChatLog chatLogResul = iChatLogService.insertChatLog(chatLog);
 
 
             ChatReadRecordReq chatReadRecord = ChatReadRecordReq.builder()
                     .chatId(chatId)
                     .userId(webSocketServer.getUserId())
-                    .chatLogId(chatLog.getId()).build();
+                    .chatLogId(chatLogResul.getId()).build();
             iChatReadRecordService.saveChatReadRecord(chatReadRecord);
         } catch (Exception e) {
             log.error("发送消息异常:{}", e);
