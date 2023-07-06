@@ -57,9 +57,9 @@ public class IChatServiceImpl extends ServiceImpl<ChatMapper, Chat> implements I
     @Transactional(rollbackFor = Exception.class)
     public ChatRes createChat(ChatReq chatReq) {
         // 创建聊天
-        String chatName = chatReq.getChatName();
         Chat chat = new Chat();
-        chat.setChatName(chatName);
+        chat.setChatName(chatReq.getChatName());
+        chat.setChatNotice(chatReq.getChatNotice());
         chatMapper.insert(chat);
         // 创建聊天用户
         List<ChatUserReq> chatUserList = chatReq.getChatUserList();
