@@ -6,11 +6,12 @@
     <resultMap id="BaseResultMap" type="com.kailin.dao.chat.entity.Chat">
         <id column="id" property="id" />
         <result column="chat_name" property="chatName" />
+        <result column="chat_notice" property="chatNotice" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, chat_name
+        id, chat_name, chat_notice
     </sql>
 
 </mapper>
