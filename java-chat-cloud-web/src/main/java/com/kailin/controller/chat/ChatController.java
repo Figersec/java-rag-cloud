@@ -8,6 +8,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +33,12 @@ public class ChatController {
     public KpResponse<ChatRes> openChat(@RequestBody ChatReq chatRe) {
         ChatRes chat = iChatService.openChat(chatRe);
         return KpResponse.data(chat);
+    }
+
+    @PostMapping("/updateChat")
+    @ApiOperation(value = "编辑聊天室")
+    public KpResponse<Boolean> updateChat(@RequestBody @Validated({ChatReq.Update.class}) ChatReq chatReq) {
+        return KpResponse.data(iChatService.updateChat(chatReq));
     }
 
 }

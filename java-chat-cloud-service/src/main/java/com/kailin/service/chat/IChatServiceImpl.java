@@ -13,6 +13,7 @@ import com.kailinjt.middleware.kp.common.api.exception.KBException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -78,5 +79,16 @@ public class IChatServiceImpl extends ServiceImpl<ChatMapper, Chat> implements I
         List<ChatUserRes> chatUserList = iChatUserService.getUserListByChatId(chatId);
         chatRes.setChatUserResList(chatUserList);
         return chatRes;
+    }
+
+    @Override
+    public boolean updateChat(ChatReq chatReq) {
+        Chat chat = chatMapper.selectById(chatReq.getChatId());
+        if(null == chat){
+            throw new KBException(KRMessageCommon.PARAM_ERROR_400, "房间不存在");
+        }
+        BeanUtils.copyProperties(chatReq,chat);
+        chatMapper.updateById(chat);
+        return true;
     }
 }

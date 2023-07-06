@@ -33,4 +33,10 @@ public interface IChatService {
     ChatRes getChatById(String chatId);
 
 
+    /**
+     * 更新聊天室
+     * @param chatReq
+     * @return
+     */
+    boolean updateChat(ChatReq chatReq);
 }
