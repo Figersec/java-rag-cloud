@@ -100,7 +100,7 @@ public class MybatisPlusGenerator {
         // 全局配置
         GlobalConfig globalConfig = new GlobalConfig();
         //生成文件输出存放路径 = 当前项目路径 + 想存放到项目中的路径
-        String fileOutputPatch = projectPath.concat("/java-chat-cloud-data/src/main/java");
+        String fileOutputPatch = projectPath.concat("/java-rag-cloud-data/src/main/java");
         globalConfig.setOutputDir(fileOutputPatch);
 
         //设置作者
@@ -216,7 +216,7 @@ public class MybatisPlusGenerator {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 //自定义输出文件名 ， 如果 Entity 设置了前后缀、此处 xml 的名称会跟着发生变化
-                return projectPath.concat("/java-chat-cloud-data/src/main/resources/mapper/").concat(MODULE_NAME).concat("/")
+                return projectPath.concat("/java-rag-cloud-data/src/main/resources/mapper/").concat(MODULE_NAME).concat("/")
                         .concat(tableInfo.getEntityName()).concat("Mapper").concat(StringPool.DOT_XML);
             }
         });

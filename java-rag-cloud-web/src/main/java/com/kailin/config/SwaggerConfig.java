@@ -157,7 +157,7 @@ public class SwaggerConfig {
         } else if (applicationContext != null) {
             projectName = applicationContext.getApplicationName();
         } else {
-            projectName = "java-chat-cloud";
+            projectName = "java-rag-cloud";
         }
 
         return new ApiInfoBuilder()

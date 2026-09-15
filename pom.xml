@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.kailin</groupId>
-    <artifactId>java-chat-cloud</artifactId>
+    <artifactId>java-rag-cloud</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
 
@@ -19,7 +19,7 @@
         <!-- api版本号 -->
         <api.version>1.0.0</api.version>
         <!-- build -->
-        <java.version>1.8</java.version>
+        <java.version>17</java.version>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
@@ -75,7 +75,7 @@
             </dependency>
             <dependency>
                 <groupId>com.kailin</groupId>
-                <artifactId>java-chat-api</artifactId>
+                <artifactId>java-rag-api</artifactId>
                 <version>${api.version}</version>
             </dependency>
             <dependency>
@@ -202,11 +202,11 @@
         </profile>
     </profiles>
     <modules>
-        <module>java-chat-cloud-common</module>
-        <module>java-chat-cloud-data</module>
-        <module>java-chat-cloud-proxy</module>
-        <module>java-chat-cloud-service</module>
-        <module>java-chat-cloud-test</module>
-        <module>java-chat-cloud-web</module>
+        <module>java-rag-cloud-common</module>
+        <module>java-rag-cloud-data</module>
+        <module>java-rag-cloud-proxy</module>
+        <module>java-rag-cloud-service</module>
+        <module>java-rag-cloud-test</module>
+        <module>java-rag-cloud-web</module>
     </modules>
 </project>

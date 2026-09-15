@@ -2,14 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>java-chat-cloud</artifactId>
+        <artifactId>java-rag-cloud</artifactId>
         <groupId>com.kailin</groupId>
         <version>${revision}</version>
     </parent>
     <packaging>jar</packaging>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>java-chat-cloud-web</artifactId>
+    <artifactId>java-rag-cloud-web</artifactId>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <start-class>com.kailin.ChatApplication</start-class>
@@ -21,7 +21,7 @@
         </dependency>
         <dependency>
             <groupId>com.kailin</groupId>
-            <artifactId>java-chat-cloud-service</artifactId>
+            <artifactId>java-rag-cloud-service</artifactId>
             <version>${revision}</version>
         </dependency>
         <dependency>
