@@ -1,6 +1,6 @@
 package com.kailin.proxy.vo;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -16,27 +16,27 @@ public class SysUserVo implements Serializable {
     private String userId;
     private String userName;
 
-    @ApiModelProperty(value = "公司id")
+    @Schema(description = "公司id")
     private String companyId;
 
-    @ApiModelProperty(value = "公司名称")
+    @Schema(description = "公司名称")
     private String companyName;
 
-    @ApiModelProperty(value = "kboss部门id")
+    @Schema(description = "kboss部门id")
     private String kbDepId;
 
-    @ApiModelProperty("kbossId")
+    @Schema(description = "kbossId")
     private String kbossId;
 
-    @ApiModelProperty(value = "部门id")
+    @Schema(description = "部门id")
     private String departmentId;
 
-    @ApiModelProperty(value = "部门名称")
+    @Schema(description = "部门名称")
     private String departmentName;
 
-    @ApiModelProperty(value = "部门全称")
+    @Schema(description = "部门全称")
     private String departmentFullName;
 
-    @ApiModelProperty(value = "工号")
+    @Schema(description = "工号")
     private String workCode;
 }

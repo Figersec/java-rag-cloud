@@ -2,12 +2,10 @@ package com.kailin.common;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.kailinjt.middleware.kp.common.api.entity.CommonKRMessage;
-import com.kailinjt.middleware.kp.common.api.entity.KRMessage;
-import com.kailinjt.middleware.kp.common.api.entity.WrapperKRMessage;
-import com.kailinjt.middleware.kp.common.api.jackson.ProdExcludePropertiesJacksonFilter;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import com.kailin.api.CommonKRMessage;
+import com.kailin.api.KRMessage;
+import com.kailin.api.WrapperKRMessage;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.log4j.Log4j2;
@@ -22,7 +20,7 @@ import java.io.Serializable;
 @Log4j2
 @Setter
 @Accessors(chain = true)
-@ApiModel(value = "KResponse", description = "响应信息实体V2.0_beta")
+@Schema(name = "KResponse", description = "响应信息实体V2.0_beta")
 public class KResponse<DATA> implements Serializable {
 
     private static final long serialVersionUID = -1L;
@@ -31,10 +29,10 @@ public class KResponse<DATA> implements Serializable {
     // @JsonIgnore
     private KRMessage krMessage;
 
-    @ApiModelProperty("返回数据")
+    @Schema(description = "返回数据")
     private DATA data;
 
-    @ApiModelProperty(value = "自定义附加响应数据体")
+    @Schema(description = "自定义附加响应数据体")
     private Object customData;
 
     @Deprecated
@@ -89,22 +87,22 @@ public class KResponse<DATA> implements Serializable {
         return data;
     }
 
-    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = ProdExcludePropertiesJacksonFilter.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public Object getCustomData() {
         return customData;
     }
 
-    @ApiModelProperty("信息[如果有，没有则不返回]")
+    @Schema(description = "信息[如果有，没有则不返回]")
     public String getMessage() {
         return krMessage.getMessage();
     }
 
-    @ApiModelProperty(value = "请求状态码", hidden = true)
+    @Schema(description = "请求状态码", hidden = true)
     public int getCode() {
         return krMessage.getCode();
     }
 
-    @ApiModelProperty(value = "请求状态(已弃用)", hidden = true)
+    @Schema(description = "请求状态(已弃用)", hidden = true)
     @Deprecated
     public String getStatus() {
         return krMessage.getCode() == 0 ? "成功" : "失败";
@@ -122,7 +120,7 @@ public class KResponse<DATA> implements Serializable {
         return this;
     }
 
-    @ApiModelProperty(value = "消息说明,5位数字码(已弃用)", hidden = true)
+    @Schema(description = "消息说明,5位数字码(已弃用)", hidden = true)
     @Deprecated
     public String getStatusCode() {
         Integer code = krMessage.getCode();

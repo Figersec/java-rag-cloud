@@ -11,7 +11,7 @@ import com.kailin.proxy.request.GetUserAndDepartmentByWorkCodeReq;
 import com.kailin.proxy.request.GetUserListByIdsReq;
 import com.kailin.proxy.request.GetUserPositionListByUserIdReq;
 import com.kailin.proxy.vo.*;
-import com.kailinjt.middleware.kp.common.api.exception.KBException;
+import com.kailin.api.KBException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

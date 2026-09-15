@@ -1,6 +1,6 @@
 package com.kailin.proxy.vo;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 public class GetUserPositionListByUserIdVO {
 
-    @ApiModelProperty(value = "用户角色数据第一层")
+    @Schema(description = "用户角色数据第一层")
     private List<UserPositionListVO1> userPositionListVO1List = new ArrayList<>();
 
 }

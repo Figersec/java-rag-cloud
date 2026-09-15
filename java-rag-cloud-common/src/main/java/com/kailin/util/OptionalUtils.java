@@ -1,7 +1,7 @@
 package com.kailin.util;
 
 import com.kailin.common.ErrorKRMessage;
-import com.kailinjt.middleware.kp.common.api.exception.KBException;
+import com.kailin.api.KBException;
 
 import java.util.Collection;
 import java.util.List;

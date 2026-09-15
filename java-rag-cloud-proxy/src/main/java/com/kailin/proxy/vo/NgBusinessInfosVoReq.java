@@ -1,9 +1,9 @@
 package com.kailin.proxy.vo;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.List;
 
@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Data
 public class NgBusinessInfosVoReq implements Serializable {
-    @ApiModelProperty(value = "商机id")
+    @Schema(description = "商机id")
     @NotEmpty(message = "商机id 不能为空")
     private List<String> ids;
 }

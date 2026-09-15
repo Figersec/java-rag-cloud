@@ -1,6 +1,6 @@
 package com.kailin.proxy.vo;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
@@ -9,40 +9,40 @@ import lombok.Data;
 @Data
 public class UserDetailsByWorkCodeVo {
 
-    @ApiModelProperty(value = "员工编号")
+    @Schema(description = "员工编号")
     private String workCode;
 
-    @ApiModelProperty(value = "用户id")
+    @Schema(description = "用户id")
     private String userId;
 
-    @ApiModelProperty(value = "用户微信id")
+    @Schema(description = "用户微信id")
     private String userWxId;
 
-    @ApiModelProperty(value = "名称")
+    @Schema(description = "名称")
     private String name;
 
-    @ApiModelProperty(value = "电话")
+    @Schema(description = "电话")
     private String phone;
 
-    @ApiModelProperty(value = "部门id")
+    @Schema(description = "部门id")
     private String departmentId;
 
-    @ApiModelProperty(value = "部门名称")
+    @Schema(description = "部门名称")
     private String departmentName;
 
-    @ApiModelProperty(value = "组织架构全名")
+    @Schema(description = "组织架构全名")
     private String fullName;
 
-    @ApiModelProperty(value = "分公司ID")
+    @Schema(description = "分公司ID")
     private String companyId;
 
-    @ApiModelProperty(value = "分公司名")
+    @Schema(description = "分公司名")
     private String companyName;
 
-    @ApiModelProperty(value = "业态value")
+    @Schema(description = "业态value")
     private String businessValue;
 
-    @ApiModelProperty(value = "kb部门id")
+    @Schema(description = "kb部门id")
     private String kbDepartmentId;
 
 }

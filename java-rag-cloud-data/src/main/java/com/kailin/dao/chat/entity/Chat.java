@@ -3,13 +3,8 @@ package com.kailin.dao.chat.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-
-import java.io.Serializable;
 
 /**
  * <p>
@@ -20,12 +15,9 @@ import java.io.Serializable;
  * @since 2023-06-28
  */
 @Data
-@EqualsAndHashCode(callSuper = false)
 @TableName("chat")
-@ApiModel(value = "Chat对象", description = "")
-public class Chat extends Model<Chat> {
-
-    private static final long serialVersionUID = 1L;
+@Schema(name = "Chat对象", description = "")
+public class Chat {
 
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private String id;
@@ -33,11 +25,5 @@ public class Chat extends Model<Chat> {
     private String chatName;
 
     private String chatNotice;
-
-
-    @Override
-    public Serializable pkVal() {
-        return this.id;
-    }
 
 }

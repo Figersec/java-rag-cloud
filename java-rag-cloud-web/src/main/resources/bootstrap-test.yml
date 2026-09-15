@@ -1,9 +1,0 @@
-spring:
-  cloud:
-    nacos:
-      server-addr: nacos.test.svc.cluster.local:8848
-      config:
-        namespace: ${spring.application.name}
-logging:
-  level:
-    "com.kailin": DEBUG

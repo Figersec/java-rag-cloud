@@ -1,6 +1,6 @@
 package com.kailin.common;
 
-import com.kailinjt.middleware.kp.common.api.entity.KRMessage;
+import com.kailin.api.KRMessage;
 
 /**
  * 错误码及错误信息定义

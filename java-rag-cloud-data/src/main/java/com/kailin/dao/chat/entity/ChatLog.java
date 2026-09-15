@@ -1,13 +1,9 @@
 package com.kailin.dao.chat.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -19,44 +15,35 @@ import java.util.Date;
  * @since 2023-06-27
  */
 @Data
-@EqualsAndHashCode(callSuper = false)
 @TableName("chat_log")
-@ApiModel(value = "ChatLog对象", description = "")
-public class ChatLog extends Model<ChatLog> {
+@Schema(name = "ChatLog对象", description = "")
+public class ChatLog {
 
-    private static final long serialVersionUID = 1L;
-
-    @ApiModelProperty(value = "主键")
+    @Schema(description = "主键")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private String id;
 
-    @ApiModelProperty(value = "聊天id")
+    @Schema(description = "聊天id")
     private String chatId;
 
-    @ApiModelProperty(value = "发送用户id")
+    @Schema(description = "发送用户id")
     private String sendUserId;
 
-    @ApiModelProperty(value = "内容")
+    @Schema(description = "内容")
     private String content;
 
-    @ApiModelProperty(value = "元数据(给第三方用)")
+    @Schema(description = "元数据(给第三方用)")
     private String meta;
 
-    @ApiModelProperty(value = "撤回：0否1是")
+    @Schema(description = "撤回：0否1是")
     private Integer recall;
 
-    @ApiModelProperty(value = "创建时间")
+    @Schema(description = "创建时间")
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     private Date createTime;
 
-    @ApiModelProperty(value = "更新时间")
+    @Schema(description = "更新时间")
     @TableField(value = "update_time", fill = FieldFill.INSERT)
     private Date updateTime;
-
-
-    @Override
-    public Serializable pkVal() {
-        return this.id;
-    }
 
 }

@@ -1,6 +1,6 @@
 package com.kailin.proxy.request;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,10 +17,10 @@ import java.util.List;
 @NoArgsConstructor
 public class GetUserAndDepartmentByWorkCodeReq {
 
-    @ApiModelProperty(value = "员工工号")
+    @Schema(description = "员工工号")
     private String workCode;
 
-    @ApiModelProperty(value = "员工状态【默认查所有】")
+    @Schema(description = "员工状态【默认查所有】")
     private List<String> status;
 
     public GetUserAndDepartmentByWorkCodeReq(String workCode){

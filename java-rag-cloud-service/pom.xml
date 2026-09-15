@@ -4,23 +4,13 @@
     <parent>
         <artifactId>java-rag-cloud</artifactId>
         <groupId>com.kailin</groupId>
-        <version>${revision}</version>
+        <version>1.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>java-rag-cloud-service</artifactId>
 
-
     <dependencies>
-        <dependency>
-            <groupId>com.kailinjt.middleware</groupId>
-            <artifactId>k-project-common-service</artifactId>
-        </dependency>
-        <!-- 分布式事务依赖 -->
-        <!-- <dependency>-->
-        <!--     <groupId>com.alibaba.cloud</groupId>-->
-        <!--     <artifactId>spring-cloud-starter-alibaba-seata</artifactId>-->
-        <!-- </dependency>-->
         <dependency>
             <groupId>com.kailin</groupId>
             <artifactId>java-rag-api</artifactId>
@@ -28,16 +18,16 @@
         <dependency>
             <groupId>com.kailin</groupId>
             <artifactId>java-rag-cloud-data</artifactId>
-            <version>${revision}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.kailin</groupId>
             <artifactId>java-rag-cloud-proxy</artifactId>
-            <version>${revision}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-redis</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
     </dependencies>
 </project>

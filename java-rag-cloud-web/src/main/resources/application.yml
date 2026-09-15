@@ -1,20 +1,18 @@
 server:
   port: 10086
   servlet:
-    context-path: /@project.parent.artifactId@
+    context-path: /java-rag-cloud
 spring:
   profiles:
     active: @profiles.active@
   application:
-    name: @project.parent.artifactId@
+    name: java-rag-cloud
   cloud:
-    nacos:
-      config:
-        enabled: true
-        file-extension: yml
-        shared-configs:
-          - data-id: ${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
-            refresh: true
+    discovery:
+      enabled: false
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
   datasource:
     druid:
       initial-size: 10
@@ -25,8 +23,6 @@ spring:
       max-pool-prepared-statement-per-connection-size: 20
       time-between-eviction-runs-millis: 60000
       min-evictable-idle-time-millis: 300000
-      #Oracle需要打开注释
-      #validation-query: SELECT 1 FROM DUAL
       test-while-idle: true
       test-on-borrow: false
       test-on-return: false
@@ -39,9 +35,6 @@ spring:
         stat:
           log-slow-sql: true
           slow-sql-millis: 1000
-  jackson:
-    time-zone: GMT+8
-    date-format: yyyy-MM-dd HH:mm:ss
 mybatis-plus:
   global-config:
     db-config:
@@ -49,19 +42,17 @@ mybatis-plus:
       logic-delete-value: 1
       logic-not-delete-value: 0
   configuration:
-    #属性映射--开启驼峰命名
     map-underscore-to-camel-case: true
     default-enum-type-handler: com.kailin.dao.enums.EnumTypeHandler
     cache-enabled: false
   type-enums-package: com.kailin.**.enums
   mapper-locations: ["classpath*:/mapper/**/*.xml"]
-# 启动时公共配置注入Nacos
-kp:
-  common:
-    config:
-      nacos-server-addr: 192.168.20.186:18849
-      nacos-username: kp-common
-      nacos-password: kp-common
-      nacos-namespace: 11e6b1d8-62f7-44f1-96fb-bd814ef81133
-      nacos-timeout: 1000
-
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs

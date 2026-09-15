@@ -1,6 +1,6 @@
 package com.kailin.proxy.vo;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.util.List;
@@ -14,13 +14,13 @@ import java.util.List;
 @Data
 public class UserPositionListVO1 {
 
-    @ApiModelProperty(value = "品牌value")
+    @Schema(description = "品牌value")
     private String brandValue;
 
-    @ApiModelProperty(value = "品牌name")
+    @Schema(description = "品牌name")
     private String brandName;
 
-    @ApiModelProperty(value = "角色列表")
+    @Schema(description = "角色列表")
     private List<GetUserPositionInfoVO> positionInfoVOList;
 
 }

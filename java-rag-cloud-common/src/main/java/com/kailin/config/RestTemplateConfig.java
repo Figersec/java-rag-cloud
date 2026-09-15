@@ -79,8 +79,8 @@ public class RestTemplateConfig {
         // 自定义配置
         builder = addCustomizers(builder, restTemplateRequestCustomizers, RestTemplateBuilder::requestCustomizers);
 
-        builder.setConnectTimeout(Duration.ofSeconds(3));
-        builder.setReadTimeout(Duration.ofSeconds(20));
+        builder = builder.connectTimeout(Duration.ofSeconds(3));
+        builder = builder.readTimeout(Duration.ofSeconds(20));
         return builder;
     }
 

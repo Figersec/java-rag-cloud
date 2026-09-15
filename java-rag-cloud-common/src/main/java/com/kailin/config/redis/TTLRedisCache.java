@@ -1,7 +1,6 @@
 package com.kailin.config.redis;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.RandomUtils;
 import org.springframework.cache.support.NullValue;
 import org.springframework.data.redis.cache.RedisCache;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -13,6 +12,7 @@ import org.springframework.util.Assert;
 import java.time.Duration;
 import java.util.Objects;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * <h2>带过期时间的RedisCache</h2>
@@ -107,6 +107,6 @@ public class TTLRedisCache extends RedisCache {
 
     private Long addRandomDelay(Long ttl) {
 
-        return ttl + RandomUtils.nextInt(0, 10);
+        return ttl + ThreadLocalRandom.current().nextInt(0, 10);
     }
 }

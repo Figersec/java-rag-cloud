@@ -1,12 +1,12 @@
 package com.kailin.util;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @ClassName SnowflakeIdUtil
@@ -209,7 +209,7 @@ public class SnowflakeIdUtil {
             return (long) (sums % 32);
         } catch (UnknownHostException e) {
             // 如果获取失败，则使用随机数备用
-            return RandomUtils.nextLong(0, 31);
+            return ThreadLocalRandom.current().nextLong(0, 31);
         }
 
     }

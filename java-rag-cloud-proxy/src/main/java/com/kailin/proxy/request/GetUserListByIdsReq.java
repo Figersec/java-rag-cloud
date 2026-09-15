@@ -2,8 +2,7 @@ package com.kailin.proxy.request;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -17,25 +16,25 @@ import java.util.stream.Collectors;
  * @date 2021/7/29 15:03
  */
 @Data
-@ApiModel(value = "根据用户id列表获取用户信息")
+@Schema(name = "根据用户id列表获取用户信息")
 public class GetUserListByIdsReq {
 
-    @ApiModelProperty(value = "用户id列表")
+    @Schema(description = "用户id列表")
     private List<String> idList = new ArrayList<>();
 
-    @ApiModelProperty(value = "wxUserIds")
+    @Schema(description = "wxUserIds")
     private List<String> wxUserIds = new ArrayList<>();
 
-    @ApiModelProperty(value = "返回数据是否为userIdkey，false，则以企业微信idkey")
+    @Schema(description = "返回数据是否为userIdkey，false，则以企业微信idkey")
     private Boolean isUserIdMapKey = true;
 
-    @ApiModelProperty(value = "是否详情、true则获取详细信息")
+    @Schema(description = "是否详情、true则获取详细信息")
     private Boolean isDetails = false;
 
-    @ApiModelProperty(value = "是否获取下级数据、详情为true && 当前参数为 true 才会获取数据")
+    @Schema(description = "是否获取下级数据、详情为true && 当前参数为 true 才会获取数据")
     private Boolean isHasChildren = true;
 
-    @ApiModelProperty(value = "是否只要在岗数据,默认在岗，反之选所有")
+    @Schema(description = "是否只要在岗数据,默认在岗，反之选所有")
     private Boolean isOnlyOnDuty = true;
 
     public GetUserListByIdsReq() {

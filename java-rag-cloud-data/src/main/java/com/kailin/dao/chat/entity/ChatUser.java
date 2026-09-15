@@ -3,13 +3,8 @@ package com.kailin.dao.chat.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-
-import java.io.Serializable;
 
 /**
  * <p>
@@ -20,30 +15,21 @@ import java.io.Serializable;
  * @since 2023-06-28
  */
 @Data
-@EqualsAndHashCode(callSuper = false)
 @TableName("chat_user")
-@ApiModel(value="ChatUser对象", description="")
-public class ChatUser extends Model<ChatUser> {
+@Schema(name = "ChatUser对象", description = "")
+public class ChatUser {
 
-    private static final long serialVersionUID = 1L;
-
-    @ApiModelProperty(value = "主键")
+    @Schema(description = "主键")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private String id;
 
-    @ApiModelProperty(value = "聊天id")
+    @Schema(description = "聊天id")
     private String chatId;
 
-    @ApiModelProperty(value = "用户id")
+    @Schema(description = "用户id")
     private String userId;
 
-    @ApiModelProperty(value = "BossUser KlChat")
+    @Schema(description = "BossUser KlChat")
     private String userType;
-
-
-    @Override
-    public Serializable pkVal() {
-        return this.id;
-    }
 
 }

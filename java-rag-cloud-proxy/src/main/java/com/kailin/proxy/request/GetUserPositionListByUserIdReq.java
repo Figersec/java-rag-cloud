@@ -1,9 +1,9 @@
 package com.kailin.proxy.request;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 /**
  * @author wangzhongqin
@@ -14,20 +14,20 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class GetUserPositionListByUserIdReq {
 
-    @ApiModelProperty(value = "用户id")
+    @Schema(description = "用户id")
     @NotBlank(message = "用户id不能为空")
     private String userId;
 
-    @ApiModelProperty(value = "品牌value")
+    @Schema(description = "品牌value")
     private String brandValue;
 
-    @ApiModelProperty(value = "业态value")
+    @Schema(description = "业态value")
     private String businessValue;
 
-    @ApiModelProperty(value = "部门value")
+    @Schema(description = "部门value")
     private String departmentId;
 
-    @ApiModelProperty(value = "搜素信息，对用角色全称、角色简称")
+    @Schema(description = "搜素信息，对用角色全称、角色简称")
     private String condition;
 
 }

@@ -1,16 +1,15 @@
 package com.kailin.proxy.vo;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-@ApiModel("部门信息")
+@Schema(description = "部门信息")
 public class DepartmentInfoVO {
-    @ApiModelProperty(value = "部门id(非kboss、本地生成id，非kb同步信息关联用此字段)")
+    @Schema(description = "部门id(非kboss、本地生成id，非kb同步信息关联用此字段)")
     private String id;
 
-    @ApiModelProperty(value = "部门id(kb同步信息，用此字段)")
+    @Schema(description = "部门id(kb同步信息，用此字段)")
     private String kbDepartmentId;
     /**
      * 分部id(来源kboss)

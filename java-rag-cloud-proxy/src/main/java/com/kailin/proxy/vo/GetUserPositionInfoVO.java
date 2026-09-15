@@ -1,7 +1,7 @@
 package com.kailin.proxy.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,30 +20,30 @@ import java.util.Date;
 @AllArgsConstructor
 public class GetUserPositionInfoVO {
 
-    @ApiModelProperty(value = "用户id")
+    @Schema(description = "用户id")
     private String userId;
 
-    @ApiModelProperty(value = "品牌value")
+    @Schema(description = "品牌value")
     private String brandValue;
 
-    @ApiModelProperty(value = "业态value")
+    @Schema(description = "业态value")
     private String businessValue;
 
-    @ApiModelProperty(value = "部门value")
+    @Schema(description = "部门value")
     private String departmentId;
 
-    @ApiModelProperty(value = "角色id")
+    @Schema(description = "角色id")
     private String positionId;
 
-    @ApiModelProperty(value = "角色名称")
+    @Schema(description = "角色名称")
     private String positionName;
 
-    @ApiModelProperty(value = "创建时间")
+    @Schema(description = "创建时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
 
-    @ApiModelProperty(value = "是否选中")
+    @Schema(description = "是否选中")
     private Boolean isSelect = false;
 
     public GetUserPositionInfoVO(String positionId, String positionName, Boolean isSelect) {

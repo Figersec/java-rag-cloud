@@ -8,8 +8,8 @@ import com.kailin.request.chatuser.ChatUserReq;
 import com.kailin.response.chat.ChatRes;
 import com.kailin.response.chatuser.ChatUserRes;
 import com.kailin.service.chatuser.IChatUserService;
-import com.kailinjt.middleware.kp.common.api.entity.KRMessageCommon;
-import com.kailinjt.middleware.kp.common.api.exception.KBException;
+import com.kailin.api.CommonKRMessage;
+import com.kailin.api.KBException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -42,10 +42,10 @@ public class IChatServiceImpl extends ServiceImpl<ChatMapper, Chat> implements I
         // 没有则创建房间
         if(StringUtils.isBlank(chatId)){
             if(CollectionUtils.isEmpty(chatReq.getChatUserList())||StringUtils.isBlank(chatReq.getChatUserList().get(0).getUserId())){
-                throw new KBException(KRMessageCommon.PARAM_ERROR_400, "创建聊天失败,缺少用户信息");
+                throw new KBException(CommonKRMessage.PARAM_ERROR_400, "创建聊天失败,缺少用户信息");
             }
             if(StringUtils.isBlank(chatReq.getChatName())){
-                throw new KBException(KRMessageCommon.PARAM_ERROR_400, "创建聊天失败,缺少聊天名称");
+                throw new KBException(CommonKRMessage.PARAM_ERROR_400, "创建聊天失败,缺少聊天名称");
             }
             return createChat(chatReq);
         }
@@ -85,7 +85,7 @@ public class IChatServiceImpl extends ServiceImpl<ChatMapper, Chat> implements I
     public boolean updateChat(ChatReq chatReq) {
         Chat chat = chatMapper.selectById(chatReq.getChatId());
         if(null == chat){
-            throw new KBException(KRMessageCommon.PARAM_ERROR_400, "房间不存在");
+            throw new KBException(CommonKRMessage.PARAM_ERROR_400, "房间不存在");
         }
         BeanUtils.copyProperties(chatReq,chat);
         chatMapper.updateById(chat);

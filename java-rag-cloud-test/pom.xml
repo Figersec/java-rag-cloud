@@ -1,86 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>java-rag-cloud</artifactId>
         <groupId>com.kailin</groupId>
-        <version>${revision}</version>
+        <version>1.0.0</version>
     </parent>
     <packaging>jar</packaging>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>java-rag-cloud-test</artifactId>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <start-class>com.kailin.ChatApplication</start-class>
-    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.kailin</groupId>
-            <artifactId>java-rag-cloud-common</artifactId>
-            <version>${revision}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.kailin</groupId>
-            <artifactId>java-rag-cloud-data</artifactId>
-            <version>${revision}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.kailin</groupId>
-            <artifactId>java-rag-cloud-proxy</artifactId>
-            <version>${revision}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.kailin</groupId>
-            <artifactId>java-rag-cloud-service</artifactId>
-            <version>${revision}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.kailin</groupId>
             <artifactId>java-rag-cloud-web</artifactId>
-            <version>${revision}</version>
-        </dependency>
-
-        <!-- 以下为测试组件 -->
-        <!-- junit单测 -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <scope>test</scope>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- 基于testng的测试框架 -->
         <dependency>
-            <groupId>com.kailin.framework</groupId>
-            <artifactId>kl-autotest</artifactId>
-            <version>1.0.2</version>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <!-- 测试代码及用例生成组件 -->
-                <groupId>com.kailin.framework</groupId>
-                <artifactId>autotest-generator</artifactId>
-                <version>1.0.1-SNAPSHOT</version>
-                <configuration>
-                    <!-- 待测试类的物理地址 -->
-                    <classDirectory>/Users/chengpuhui/klProject/archetest/java-demo/java-demo-web/src/main/java/com/kailin/demo/controller</classDirectory>
-                    <!-- 生成测试类和excel的物理地址，到src/test为止 -->
-                    <testDirectory>/Users/chengpuhui/klProject/archetest/java-demo/java-demo-test/src/test</testDirectory>
-                    <!-- springboot启动类的全路径 -->
-                    <applicationClass>com.kailin.ChatApplication</applicationClass>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>

@@ -2,10 +2,10 @@ package com.kailin.aspect;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
-import com.kailinjt.middleware.kp.common.api.entity.CommonKRMessage;
-import com.kailinjt.middleware.kp.common.api.entity.KRMessage;
-import com.kailinjt.middleware.kp.common.api.entity.KpResponse;
-import com.kailinjt.middleware.kp.common.api.exception.KBException;
+import com.kailin.api.CommonKRMessage;
+import com.kailin.api.KBException;
+import com.kailin.api.KRMessage;
+import com.kailin.api.KpResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -14,8 +14,8 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import java.util.List;
 
 /**
