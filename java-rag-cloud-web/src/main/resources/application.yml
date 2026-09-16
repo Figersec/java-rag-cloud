@@ -72,7 +72,8 @@ rag:
     api-key: "sk-69f9ae58e5a6452baef0e60bd4ea6f3e"
     model: deepseek-v4-pro
     temperature: 0.2
-    max-tokens: 1024
+    max-tokens: 16384
+    reasoning-effort: low
   milvus:
     uri: http://127.0.0.1:19530
     collection: rag_chunk

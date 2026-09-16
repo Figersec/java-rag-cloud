@@ -65,8 +65,11 @@ public class OpenAiCompatibleClient {
         Map<String, Object> body = new HashMap<>();
         body.put("model", chat.getModel());
         body.put("temperature", chat.getTemperature());
-        body.put("max_tokens", chat.getMaxTokens());
+        body.put("max_tokens", Math.max(chat.getMaxTokens(), 4096));
         body.put("stream", true);
+        if (StringUtils.isNotBlank(chat.getReasoningEffort())) {
+            body.put("reasoning_effort", chat.getReasoningEffort());
+        }
         body.put("messages", List.of(
                 Map.of("role", "system", "content", systemPrompt),
                 Map.of("role", "user", "content", userPrompt)
@@ -74,14 +77,14 @@ public class OpenAiCompatibleClient {
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(joinUrl(chat.getBaseUrl(), "/chat/completions")))
-                    .timeout(Duration.ofSeconds(180))
+                    .timeout(Duration.ofMinutes(10))
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + chat.getApiKey())
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .header(HttpHeaders.ACCEPT, "text/event-stream")
                     .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(body)))
                     .build();
             HttpResponse<InputStream> response = HttpClient.newBuilder()
-                    .connectTimeout(Duration.ofSeconds(10))
+                    .connectTimeout(Duration.ofSeconds(20))
                     .build()
                     .send(request, HttpResponse.BodyHandlers.ofInputStream());
             if (response.statusCode() / 100 != 2) {
@@ -101,7 +104,11 @@ public class OpenAiCompatibleClient {
                     if ("[DONE]".equals(data)) {
                         break;
                     }
-                    JsonNode delta = objectMapper.readTree(data).path("choices").path(0).path("delta");
+                    JsonNode choice = objectMapper.readTree(data).path("choices").path(0);
+                    JsonNode delta = choice.path("delta");
+                    if (delta.isMissingNode() || delta.isNull()) {
+                        delta = choice.path("message");
+                    }
                     emitText(delta, List.of("reasoning_content", "reasoning", "thinking", "reasoning_text"), onReasoning);
                     emitText(delta, List.of("content"), onContent);
                 }
@@ -114,16 +121,45 @@ public class OpenAiCompatibleClient {
     }
 
     private void emitText(JsonNode delta, List<String> fields, java.util.function.Consumer<String> consumer) {
-        if (consumer == null) {
+        if (consumer == null || delta == null || delta.isMissingNode() || delta.isNull()) {
             return;
         }
         for (String field : fields) {
-            JsonNode node = delta.path(field);
-            if (!node.isMissingNode() && !node.isNull() && node.isTextual() && !node.asText().isEmpty()) {
-                consumer.accept(node.asText());
+            String text = nodeText(delta.path(field));
+            if (StringUtils.isNotEmpty(text)) {
+                consumer.accept(text);
                 return;
             }
         }
+    }
+
+    private String nodeText(JsonNode node) {
+        if (node == null || node.isMissingNode() || node.isNull()) {
+            return null;
+        }
+        if (node.isTextual() || node.isNumber() || node.isBoolean()) {
+            return node.asText();
+        }
+        if (node.isArray()) {
+            StringBuilder text = new StringBuilder();
+            for (JsonNode part : node) {
+                String piece = nodeText(part.path("text"));
+                if (piece == null) {
+                    piece = nodeText(part.path("content"));
+                }
+                if (piece == null && part.isTextual()) {
+                    piece = part.asText();
+                }
+                if (piece != null) {
+                    text.append(piece);
+                }
+            }
+            return text.isEmpty() ? null : text.toString();
+        }
+        if (node.has("text")) {
+            return nodeText(node.get("text"));
+        }
+        return null;
     }
 
     public String chat(String systemPrompt, String userPrompt) {
@@ -132,7 +168,10 @@ public class OpenAiCompatibleClient {
         Map<String, Object> body = new HashMap<>();
         body.put("model", chat.getModel());
         body.put("temperature", chat.getTemperature());
-        body.put("max_tokens", chat.getMaxTokens());
+        body.put("max_tokens", Math.max(chat.getMaxTokens(), 4096));
+        if (StringUtils.isNotBlank(chat.getReasoningEffort())) {
+            body.put("reasoning_effort", chat.getReasoningEffort());
+        }
         body.put("messages", List.of(
                 Map.of("role", "system", "content", systemPrompt),
                 Map.of("role", "user", "content", userPrompt)

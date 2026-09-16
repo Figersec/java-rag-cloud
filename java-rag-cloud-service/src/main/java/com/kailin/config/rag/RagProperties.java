@@ -30,6 +30,7 @@ public class RagProperties {
         private String model;
         private double temperature;
         private int maxTokens;
+        private String reasoningEffort;
     }
 
     @Data

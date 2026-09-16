@@ -144,14 +144,14 @@ public class RagService {
             emit.accept(Map.of("type", "done"));
             return;
         }
-        emit.accept(event("status", "已命中 " + ctx.res().getCitations().size() + " 条资料，正在思考…"));
-        Map<String, Object> citations = new HashMap<>();
-        citations.put("type", "citations");
-        citations.put("citations", ctx.res().getCitations());
-        emit.accept(citations);
+        emit.accept(event("status", "正在结合资料生成回答…"));
         StringBuilder answer = new StringBuilder();
         openAiCompatibleClient.chatStream(SYSTEM_PROMPT, userPrompt(ctx.evidence(), question),
-                reasoning -> emit.accept(event("reasoning", reasoning)),
+                reasoning -> {
+                    if (answer.isEmpty()) {
+                        emit.accept(event("reasoning", reasoning));
+                    }
+                },
                 piece -> {
                     answer.append(piece);
                     emit.accept(event("delta", piece));
@@ -169,7 +169,10 @@ public class RagService {
         return event;
     }
 
-    private static final String SYSTEM_PROMPT = "你是企业知识库助手。只根据提供的资料回答问题；资料中没有的内容明确说不知道，不要编造。";
+    private static final String SYSTEM_PROMPT = """
+            你是企业知识库助手。只根据提供的资料回答用户的问题。
+            要求：直接给出简洁、结构化的结论，不要原文粘贴资料，不要罗列参考来源或切片全文。
+            资料中没有的内容明确说不知道，不要编造。""";
 
     private String userPrompt(String evidence, String question) {
         return "【资料】\n" + evidence + "【问题】\n" + question;
