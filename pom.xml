@@ -30,6 +30,9 @@
         <redisson.version>3.45.1</redisson.version>
         <knife4j.version>4.5.0</knife4j.version>
         <swagger-annotations.version>2.2.30</swagger-annotations.version>
+        <milvus-sdk.version>2.5.12</milvus-sdk.version>
+        <pdfbox.version>3.0.5</pdfbox.version>
+        <poi.version>5.4.1</poi.version>
         <sonar.coverage.jacoco.xmlReportPaths>/tmp/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
@@ -95,6 +98,21 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
                 <version>${fastjson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.milvus</groupId>
+                <artifactId>milvus-sdk-java</artifactId>
+                <version>${milvus-sdk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.pdfbox</groupId>
+                <artifactId>pdfbox</artifactId>
+                <version>${pdfbox.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>${poi.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

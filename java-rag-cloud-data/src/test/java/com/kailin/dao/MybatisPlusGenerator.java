@@ -35,11 +35,11 @@ public class MybatisPlusGenerator {
     private static final String MODULE_NAME = "";
     //要生成的表名
     private static final String[] TABLES= {"chat"};
-    private static final String JDBC_URL = "jdbc:mysql://192.168.21.112:3306/kl_chat?useUnicode=true&characterEncoding=UTF-8" +
-            "&useSSL=false&zeroDateTimeBehavior=convertToNull&";
+    private static final String JDBC_URL = "jdbc:mysql://127.0.0.1:33066/java_rag?useUnicode=true&characterEncoding=UTF-8" +
+            "&useSSL=false&allowPublicKeyRetrieval=true&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2B8";
     private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
     private static final String JDBC_USERNAME = "root";
-    private static final String JDBC_PASSWORD = "qwer1234";
+    private static final String JDBC_PASSWORD = "123456";
     private static final String BASE_PACKAGE = "com.kailin.dao.chat";
 
     public static void main(String[] args) {

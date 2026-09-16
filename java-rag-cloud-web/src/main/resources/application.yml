@@ -35,6 +35,10 @@ spring:
         stat:
           log-slow-sql: true
           slow-sql-millis: 1000
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
 mybatis-plus:
   global-config:
     db-config:
@@ -56,3 +60,24 @@ springdoc:
     path: /swagger-ui.html
   api-docs:
     path: /v3/api-docs
+rag:
+  embedding:
+    base-url: https://api.siliconflow.cn/v1
+    api-key: ${RAG_EMBEDDING_API_KEY:}
+    model: BAAI/bge-m3
+    dimension: 1024
+    batch-size: 16
+  chat:
+    base-url: https://api.siliconflow.cn/v1
+    api-key: ${RAG_CHAT_API_KEY:}
+    model: Qwen/Qwen2.5-7B-Instruct
+    temperature: 0.2
+    max-tokens: 1024
+  milvus:
+    uri: http://127.0.0.1:19530
+    collection: rag_chunk
+  chunk:
+    size: 500
+    overlap: 80
+  storage:
+    local-dir: ${user.home}/java-rag-files

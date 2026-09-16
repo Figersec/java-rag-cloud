@@ -14,6 +14,7 @@ DEFAULT_GROUP
 logs
 target
 *-codegenerator
+java-rag-files/
 
 # 扩展名
 *.iml
