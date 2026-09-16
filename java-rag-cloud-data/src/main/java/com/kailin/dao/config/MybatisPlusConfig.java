@@ -1,6 +1,6 @@
 package com.kailin.dao.config;
 
-import com.alibaba.druid.spring.boot3.autoconfigure.DruidDataSourceBuilder;
+import com.alibaba.druid.pool.DruidDataSource;
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
@@ -72,7 +72,7 @@ public class MybatisPlusConfig {
     @Bean(name = "ragMainDataSource")
     @ConfigurationProperties(prefix = "spring.datasource.druid.ragmain" )
     public DataSource ragMainDataSource() {
-        return DruidDataSourceBuilder.create().build();
+        return new DruidDataSource();
     }
 
     /**
@@ -82,7 +82,7 @@ public class MybatisPlusConfig {
     @Bean(name = "ragSlaveDataSource")
     @ConfigurationProperties(prefix = "spring.datasource.druid.ragslave" )
     public DataSource ragSlaveDataSource() {
-        return DruidDataSourceBuilder.create().build();
+        return new DruidDataSource();
     }
 
     /**

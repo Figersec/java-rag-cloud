@@ -19,15 +19,19 @@ spring:
         maxActive: 20
   data:
     redis:
-      host: 127.0.0.1
+      host: 192.168.21.110
       port: 6379
-      database: 0
+      database: 7
+      auth:
+        db: 12
+      password: mima123456
   rabbitmq:
-    host: 127.0.0.1
-    port: 5672
-    username: guest
-    password: guest
-    virtual-host: /
+    host: 192.168.21.80
+    port: 32709
+    username: ng_kboss
+    password: W58n2iWjPGEVppC7aZ
+    #虚拟host 可以不设置,使用server默认host
+    virtual-host: ng_kboss
 logging:
   level:
     com.kailin: DEBUG

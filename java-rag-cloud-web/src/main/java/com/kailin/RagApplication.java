@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.openfeign.EnableFeignClients;
@@ -14,6 +16,7 @@ import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.util.StopWatch;
 
 import com.alibaba.druid.spring.boot3.autoconfigure.DruidDataSourceAutoConfigure;
+import org.redisson.spring.starter.RedissonAutoConfigurationV2;
 
 /**
  * @Author chengpuhui
@@ -21,7 +24,10 @@ import com.alibaba.druid.spring.boot3.autoconfigure.DruidDataSourceAutoConfigure
  */
 @SpringBootApplication(scanBasePackages = "com.kailin", exclude = {
         DataSourceAutoConfiguration.class,
-        DruidDataSourceAutoConfigure.class
+        DruidDataSourceAutoConfigure.class,
+        RedisAutoConfiguration.class,
+        RedissonAutoConfigurationV2.class,
+        RabbitAutoConfiguration.class
 })
 @EnableRetry
 @EnableFeignClients(basePackages = "com.kailin")
