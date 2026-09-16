@@ -1,5 +1,6 @@
 package com.kailin.controller.rag;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kailin.api.KpResponse;
 import com.kailin.request.rag.KbCreateReq;
 import com.kailin.request.rag.KbIdReq;
@@ -10,6 +11,7 @@ import com.kailin.response.rag.RagDocumentRes;
 import com.kailin.service.rag.RagService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -21,7 +23,11 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/rag")
@@ -30,6 +36,7 @@ import java.util.List;
 public class RagController {
 
     private final RagService ragService;
+    private final ObjectMapper objectMapper;
 
     @PostMapping("/kb/create")
     @Operation(summary = "创建知识库")
@@ -60,5 +67,37 @@ public class RagController {
     @Operation(summary = "知识库问答")
     public KpResponse<RagAskRes> ask(@Valid @RequestBody RagAskReq req) {
         return KpResponse.data(ragService.ask(req.getKbId(), req.getQuestion(), req.getTopK()));
+    }
+
+    @PostMapping(value = "/ask/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @Operation(summary = "知识库问答（流式）")
+    public void askStream(@Valid @RequestBody RagAskReq req, HttpServletResponse response) throws IOException {
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/event-stream;charset=UTF-8");
+        response.setHeader("Cache-Control", "no-cache, no-transform");
+        response.setHeader("X-Accel-Buffering", "no");
+        response.setHeader("Connection", "keep-alive");
+        response.flushBuffer();
+        PrintWriter out = response.getWriter();
+        try {
+            ragService.askStream(req.getKbId(), req.getQuestion(), req.getTopK(), event -> writeSse(out, event));
+        } catch (Exception e) {
+            Map<String, Object> error = new LinkedHashMap<>();
+            error.put("type", "error");
+            error.put("message", e.getMessage() == null ? "问答失败" : e.getMessage());
+            writeSse(out, error);
+        }
+    }
+
+    private void writeSse(PrintWriter out, Map<String, Object> event) {
+        try {
+            synchronized (out) {
+                out.write("data:" + objectMapper.writeValueAsString(event) + "\n\n");
+                out.flush();
+            }
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
     }
 }

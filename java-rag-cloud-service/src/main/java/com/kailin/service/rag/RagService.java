@@ -27,9 +27,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -122,20 +124,69 @@ public class RagService {
     }
 
     public RagAskRes ask(String kbId, String question, Integer topK) {
-        requireKb(kbId);
-        int k = topK == null || topK <= 0 ? 5 : Math.min(topK, 20);
-        List<Float> queryVector = openAiCompatibleClient.embed(List.of(question)).get(0);
-        List<VectorHit> hits = milvusVectorStore.search(kbId, queryVector, k);
-        if (hits.isEmpty()) {
+        AskContext ctx = retrieve(kbId, question, topK);
+        if (ctx.empty()) {
             RagAskRes empty = new RagAskRes();
             empty.setAnswer("知识库中没有检索到相关内容。");
             return empty;
         }
+        String answer = openAiCompatibleClient.chat(SYSTEM_PROMPT, userPrompt(ctx.evidence(), question));
+        ctx.res().setAnswer(answer);
+        return ctx.res();
+    }
+
+    public void askStream(String kbId, String question, Integer topK, java.util.function.Consumer<Map<String, Object>> emit) {
+        emit.accept(event("status", "正在检索知识库…"));
+        AskContext ctx = retrieve(kbId, question, topK);
+        if (ctx.empty()) {
+            emit.accept(event("status", "未检索到相关资料"));
+            emit.accept(event("delta", "知识库中没有检索到相关内容。"));
+            emit.accept(Map.of("type", "done"));
+            return;
+        }
+        emit.accept(event("status", "已命中 " + ctx.res().getCitations().size() + " 条资料，正在思考…"));
+        Map<String, Object> citations = new HashMap<>();
+        citations.put("type", "citations");
+        citations.put("citations", ctx.res().getCitations());
+        emit.accept(citations);
+        StringBuilder answer = new StringBuilder();
+        openAiCompatibleClient.chatStream(SYSTEM_PROMPT, userPrompt(ctx.evidence(), question),
+                reasoning -> emit.accept(event("reasoning", reasoning)),
+                piece -> {
+                    answer.append(piece);
+                    emit.accept(event("delta", piece));
+                });
+        if (answer.isEmpty()) {
+            emit.accept(event("delta", "模型未返回内容"));
+        }
+        emit.accept(Map.of("type", "done"));
+    }
+
+    private Map<String, Object> event(String type, String content) {
+        Map<String, Object> event = new HashMap<>();
+        event.put("type", type);
+        event.put("content", content);
+        return event;
+    }
+
+    private static final String SYSTEM_PROMPT = "你是企业知识库助手。只根据提供的资料回答问题；资料中没有的内容明确说不知道，不要编造。";
+
+    private String userPrompt(String evidence, String question) {
+        return "【资料】\n" + evidence + "【问题】\n" + question;
+    }
+
+    private AskContext retrieve(String kbId, String question, Integer topK) {
+        requireKb(kbId);
+        int k = topK == null || topK <= 0 ? 5 : Math.min(topK, 20);
+        List<Float> queryVector = openAiCompatibleClient.embed(List.of(question)).get(0);
+        List<VectorHit> hits = milvusVectorStore.search(kbId, queryVector, k);
+        RagAskRes res = new RagAskRes();
+        if (hits.isEmpty()) {
+            return new AskContext(res, "");
+        }
         List<String> chunkIds = hits.stream().map(VectorHit::getChunkId).filter(StringUtils::isNotBlank).toList();
         if (chunkIds.isEmpty()) {
-            RagAskRes empty = new RagAskRes();
-            empty.setAnswer("知识库中没有检索到相关内容。");
-            return empty;
+            return new AskContext(res, "");
         }
         Map<String, RagChunk> chunkMap = ragChunkMapper.selectBatchIds(chunkIds).stream()
                 .collect(Collectors.toMap(RagChunk::getId, item -> item, (a, b) -> a));
@@ -146,7 +197,6 @@ public class RagService {
                 .collect(Collectors.toMap(RagDocument::getId, item -> item, (a, b) -> a));
 
         StringBuilder evidence = new StringBuilder();
-        RagAskRes res = new RagAskRes();
         int index = 1;
         for (VectorHit hit : hits) {
             RagChunk chunk = chunkMap.get(hit.getChunkId());
@@ -166,15 +216,13 @@ public class RagService {
             res.getCitations().add(citation);
             index++;
         }
-        if (res.getCitations().isEmpty()) {
-            res.setAnswer("知识库中没有检索到相关内容。");
-            return res;
+        return new AskContext(res, evidence.toString());
+    }
+
+    private record AskContext(RagAskRes res, String evidence) {
+        boolean empty() {
+            return res.getCitations() == null || res.getCitations().isEmpty();
         }
-        String answer = openAiCompatibleClient.chat(
-                "你是企业知识库助手。只根据提供的资料回答问题；资料中没有的内容明确说不知道，不要编造。",
-                "【资料】\n" + evidence + "【问题】\n" + question);
-        res.setAnswer(answer);
-        return res;
     }
 
     private void ingest(RagDocument document, Path stored, String fileType) {
@@ -209,7 +257,12 @@ public class RagService {
             Files.createDirectories(dir);
             String safeName = originalName.replaceAll("[\\\\/:*?\"<>|]", "_");
             Path target = dir.resolve(docId + "_" + safeName);
-            file.transferTo(target);
+            try (InputStream in = file.getInputStream()) {
+                Files.copy(in, target, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+            }
+            if (Files.size(target) <= 0) {
+                throw new KBException(RagKRMessage.DOCUMENT_PARSE_FAILED, "保存后的文件为空");
+            }
             return target.toAbsolutePath();
         } catch (Exception e) {
             throw new KBException(RagKRMessage.DOCUMENT_PARSE_FAILED, "保存文件失败: " + e.getMessage());

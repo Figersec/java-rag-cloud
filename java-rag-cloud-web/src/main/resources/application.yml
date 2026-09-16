@@ -69,7 +69,7 @@ rag:
     batch-size: 20
   chat:
     base-url: https://api.deepseek.com/v1
-    api-key: "sk-3ac42f4a7c2b4e9daea2579db0c2c9d1"
+    api-key: "sk-69f9ae58e5a6452baef0e60bd4ea6f3e"
     model: deepseek-v4-pro
     temperature: 0.2
     max-tokens: 1024
@@ -81,3 +81,8 @@ rag:
     overlap: 80
   storage:
     local-dir: ${user.home}/java-rag-files
+  ocr:
+    enabled: true
+    model: qwen-vl-ocr
+    dpi: 144
+    max-pages: 20

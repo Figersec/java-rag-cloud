@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>企业知识库</title>
+  <style>
+    :root {
+      --nav: #0b1220;
+      --nav-hover: #162033;
+      --bg: #f4f6f9;
+      --card: #fff;
+      --line: #e6eaf0;
+      --text: #122033;
+      --muted: #6b778c;
+      --brand: #1f5eff;
+      --brand-dark: #1546c4;
+      --user: #1f5eff;
+      --shadow: 0 10px 30px rgba(15, 23, 42, .06);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body { margin: 0; font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; color: var(--text); background: var(--bg); }
+    .layout { display: flex; height: 100%; }
+    nav {
+      width: 232px; background: var(--nav); color: #fff; padding: 22px 14px; flex-shrink: 0;
+      display: flex; flex-direction: column;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; margin: 0 8px 28px; }
+    .logo { width: 32px; height: 32px; border-radius: 9px; background: linear-gradient(135deg, #1f5eff, #63a4ff); display: grid; place-items: center; font-weight: 700; font-size: 13px; }
+    .brand b { display: block; font-size: 14px; }
+    .brand span { display: block; color: #9aa7bd; font-size: 11px; margin-top: 2px; }
+    nav a { display: block; color: #c5d0e0; text-decoration: none; padding: 10px 12px; border-radius: 10px; margin-bottom: 4px; font-size: 14px; }
+    nav a.active, nav a:hover { background: var(--nav-hover); color: #fff; }
+    .nav-foot { margin-top: auto; padding: 12px 8px 4px; border-top: 1px solid #243044; }
+    .nav-foot label { display: block; color: #8b98ad; font-size: 11px; margin-bottom: 8px; }
+    .nav-foot select { width: 100%; background: #162033; color: #fff; border: 1px solid #2b3b55; border-radius: 8px; padding: 8px; }
+    .nav-foot button { width: 100%; margin-top: 8px; background: #243044; }
+    main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .admin { padding: 28px 32px 40px; max-width: 980px; }
+    h2 { margin: 0 0 8px; font-size: 22px; }
+    .hint { color: var(--muted); margin: 0 0 16px; font-size: 13px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-bottom: 16px; box-shadow: var(--shadow); }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    input, textarea, select, button { font-size: 14px; font-family: inherit; }
+    input[type="text"], input[type="number"], textarea, select { border: 1px solid #d7deea; border-radius: 8px; padding: 9px 11px; background: #fff; }
+    button { cursor: pointer; border: 0; border-radius: 8px; background: var(--brand); color: #fff; padding: 9px 14px; }
+    button:hover { background: var(--brand-dark); }
+    button.secondary { background: #4b5563; }
+    button.secondary:hover { background: #374151; }
+    button.ghost { background: transparent; color: #445066; border: 1px solid var(--line); }
+    button.ghost:hover { background: #f3f5f8; }
+    button:disabled { opacity: .55; cursor: not-allowed; }
+    .ok { color: #0f8a5f; }
+    .err { color: #c43c3c; }
+    .page { display: none; }
+    .page.active { display: block; }
+    #page-ask.active { display: flex; flex-direction: column; height: 100%; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); }
+    th { color: var(--muted); font-weight: 600; font-size: 12px; }
+    #status { min-height: 18px; margin: 0 32px; padding-top: 10px; font-size: 13px; }
+
+    .chat-shell { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+    .chat-top { height: 58px; border-bottom: 1px solid var(--line); background: #fff; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
+    .chat-top h2 { font-size: 16px; margin: 0; }
+    .chat-top p { margin: 2px 0 0; color: var(--muted); font-size: 12px; }
+    .thread { flex: 1; overflow: auto; padding: 28px 0 12px; }
+    .thread-inner { width: min(820px, calc(100% - 48px)); margin: 0 auto; }
+    .empty { text-align: center; padding: 72px 16px 24px; }
+    .empty h3 { margin: 16px 0 8px; font-size: 26px; font-weight: 650; }
+    .empty p { color: var(--muted); margin: 0 0 24px; }
+    .chips { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+    .chip { border: 1px solid var(--line); background: #fff; color: #334155; border-radius: 999px; padding: 8px 14px; cursor: pointer; font-size: 13px; }
+    .chip:hover { border-color: #b9c8ff; color: var(--brand); }
+    .msg { display: flex; gap: 12px; margin: 0 0 22px; }
+    .msg.user { justify-content: flex-end; }
+    .avatar { width: 32px; height: 32px; border-radius: 10px; flex-shrink: 0; display: grid; place-items: center; font-size: 12px; font-weight: 700; color: #fff; }
+    .avatar.bot { background: linear-gradient(135deg, #1f5eff, #63a4ff); }
+    .bubble { max-width: 78%; }
+    .msg.user .bubble { background: var(--user); color: #fff; border-radius: 16px 16px 4px 16px; padding: 12px 14px; line-height: 1.65; white-space: pre-wrap; word-break: break-word; }
+    .msg.bot .bubble { background: #fff; border: 1px solid var(--line); border-radius: 4px 16px 16px 16px; padding: 14px 16px; line-height: 1.75; white-space: pre-wrap; word-break: break-word; box-shadow: var(--shadow); }
+    .msg.bot.error .bubble { border-color: #f3c4c4; background: #fff6f6; color: #b42318; }
+    .sources { margin-top: 12px; }
+    .sources summary, .think summary { cursor: pointer; color: var(--brand); font-size: 12px; font-weight: 600; }
+    .think { margin-bottom: 10px; padding: 8px 10px; background: #f4f7fb; border-radius: 10px; color: #5b677a; }
+    .think summary { color: #64748b; list-style: none; }
+    .think summary::-webkit-details-marker { display: none; }
+    .think-body { margin-top: 8px; font-size: 13px; line-height: 1.65; white-space: pre-wrap; max-height: 220px; overflow: auto; }
+    .source-item { margin-top: 8px; padding: 8px 10px; background: #f7f9fc; border-radius: 8px; font-size: 12px; color: #445066; white-space: pre-wrap; }
+    .composer-wrap { padding: 8px 16px 22px; }
+    .composer { width: min(820px, 100%); margin: 0 auto; background: #fff; border: 1px solid #d7deea; border-radius: 18px; box-shadow: 0 12px 40px rgba(17, 24, 39, .08); padding: 10px 10px 10px 16px; display: flex; align-items: flex-end; gap: 8px; }
+    .composer textarea { flex: 1; border: 0; outline: none; resize: none; min-height: 24px; max-height: 140px; padding: 8px 0; line-height: 1.5; }
+    .send { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; padding: 0; font-size: 16px; }
+    .fineprint { text-align: center; color: #98a2b3; font-size: 11px; margin: 8px 0 0; }
+    .cursor { display: inline-block; width: 7px; height: 14px; background: var(--brand); animation: blink 1s step-end infinite; margin-left: 2px; vertical-align: -2px; }
+    @keyframes blink { 50% { opacity: 0; } }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <nav>
+      <div class="brand">
+        <div class="logo">KL</div>
+        <div><b>企业知识库</b><span>Intelligent RAG</span></div>
+      </div>
+      <a href="#kb" data-page="kb">知识库</a>
+      <a href="#upload" data-page="upload">文档上传</a>
+      <a href="#ask" data-page="ask">智能问答</a>
+      <div class="nav-foot">
+        <label>当前知识库</label>
+        <select id="kbSelect"></select>
+        <button class="secondary" type="button" onclick="loadKb()">刷新知识库</button>
+      </div>
+    </nav>
+    <main>
+      <p id="status" class="hint"></p>
+
+      <section id="page-kb" class="page admin">
+        <h2>知识库</h2>
+        <p class="hint">先创建知识库，再上传文档，即可在智能问答中检索。</p>
+        <div class="card">
+          <div class="row">
+            <input id="kbName" type="text" placeholder="知识库名称" value="测试库" />
+            <input id="kbDesc" type="text" placeholder="描述（可选）" />
+            <button type="button" onclick="createKb()">创建</button>
+          </div>
+        </div>
+        <div class="card">
+          <table>
+            <thead><tr><th>名称</th><th>ID</th><th>描述</th></tr></thead>
+            <tbody id="kbTable"><tr><td colspan="3">暂无</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="page-upload" class="page admin">
+        <h2>文档上传</h2>
+        <p class="hint">支持 txt / md / pdf / docx。扫描件 PDF 会自动 OCR，完成后状态应为 READY。</p>
+        <div class="card">
+          <div class="row">
+            <input id="file" type="file" />
+            <button type="button" onclick="upload()">上传并入库</button>
+            <button class="secondary" type="button" onclick="loadDocs()">刷新文档</button>
+          </div>
+        </div>
+        <div class="card">
+          <table>
+            <thead><tr><th>文件</th><th>状态</th><th>切片</th><th>说明</th></tr></thead>
+            <tbody id="docTable"><tr><td colspan="4">暂无文档</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="page-ask" class="page">
+        <div class="chat-shell">
+          <div class="chat-top">
+            <div>
+              <h2>智能问答</h2>
+              <p>基于当前知识库检索后生成回答</p>
+            </div>
+            <button class="ghost" type="button" onclick="newChat()">新对话</button>
+          </div>
+          <div class="thread" id="thread">
+            <div class="thread-inner" id="threadInner">
+              <div class="empty" id="emptyState">
+                <div class="logo" style="margin:0 auto;width:48px;height:48px;font-size:18px;">KL</div>
+                <h3>你好，需要查点什么？</h3>
+                <p>我会只根据知识库中的资料作答，找不到会明确告诉你。</p>
+                <div class="chips">
+                  <button class="chip" type="button" onclick="askPreset('这份文档讲了什么？')">这份文档讲了什么？</button>
+                  <button class="chip" type="button" onclick="askPreset('列出其中的核心制度条款')">列出核心制度条款</button>
+                  <button class="chip" type="button" onclick="askPreset('有哪些需要特别注意的规定？')">有哪些注意事项？</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="composer-wrap">
+            <form class="composer" id="askForm">
+              <textarea id="question" rows="1" placeholder="询问知识库…"></textarea>
+              <button class="send" id="askBtn" type="submit" title="发送">➤</button>
+            </form>
+            <div class="fineprint">Enter 发送，Shift + Enter 换行 · 回答来自企业知识库检索</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const BASE = ".";
+    const KB_KEY = "rag-demo-kbId";
+    let asking = false;
+    let abortAsk = null;
+
+    function setStatus(msg, ok) {
+      const el = document.getElementById("status");
+      el.textContent = msg || "";
+      el.className = ok === false ? "err" : (ok ? "ok" : "hint");
+    }
+
+    function kbId() {
+      const id = document.getElementById("kbSelect").value;
+      if (!id) throw new Error("请先在「知识库」页创建或选择知识库");
+      return id;
+    }
+
+    async function postJson(path, body) {
+      const res = await fetch(BASE + path, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body || {})
+      });
+      const json = await res.json();
+      if (json.code !== 0) throw new Error(json.message || "请求失败");
+      return json.data;
+    }
+
+    function showPage() {
+      const page = (location.hash || "#kb").replace("#", "");
+      document.querySelectorAll(".page").forEach((el) => el.classList.remove("active"));
+      document.querySelectorAll("nav a").forEach((el) => el.classList.remove("active"));
+      const target = document.getElementById("page-" + page) || document.getElementById("page-kb");
+      target.classList.add("active");
+      const link = document.querySelector("nav a[data-page='" + (target.id.replace("page-", "")) + "']");
+      if (link) link.classList.add("active");
+      document.getElementById("status").style.display = page === "ask" ? "none" : "";
+      if (page === "upload") loadDocs().catch(() => {});
+      if (page === "ask") {
+        const q = document.getElementById("question");
+        q.style.height = "24px";
+        q.focus();
+      }
+    }
+
+    async function createKb() {
+      try {
+        const data = await postJson("/rag/kb/create", {
+          name: document.getElementById("kbName").value.trim(),
+          description: document.getElementById("kbDesc").value.trim()
+        });
+        localStorage.setItem(KB_KEY, data.id);
+        setStatus("已创建知识库 " + data.name, true);
+        await loadKb();
+      } catch (e) {
+        setStatus(e.message, false);
+      }
+    }
+
+    async function loadKb() {
+      try {
+        const list = await postJson("/rag/kb/list", {});
+        const sel = document.getElementById("kbSelect");
+        const saved = localStorage.getItem(KB_KEY);
+        sel.innerHTML = (list || []).map((k) =>
+          `<option value="${k.id}">${k.name}</option>`
+        ).join("");
+        if (saved && [...sel.options].some((o) => o.value === saved)) sel.value = saved;
+        else if (sel.value) localStorage.setItem(KB_KEY, sel.value);
+        document.getElementById("kbTable").innerHTML = (list || []).length
+          ? list.map((k) => `<tr><td>${k.name}</td><td>${k.id}</td><td>${k.description || ""}</td></tr>`).join("")
+          : `<tr><td colspan="3">暂无</td></tr>`;
+      } catch (e) {
+        setStatus(e.message, false);
+      }
+    }
+
+    document.getElementById("kbSelect").addEventListener("change", () => {
+      localStorage.setItem(KB_KEY, document.getElementById("kbSelect").value);
+      loadDocs().catch(() => {});
+    });
+
+    async function upload() {
+      try {
+        const file = document.getElementById("file").files[0];
+        if (!file) throw new Error("请选择文件");
+        setStatus("正在上传并向量化…");
+        const form = new FormData();
+        form.append("kbId", kbId());
+        form.append("file", file);
+        const res = await fetch(BASE + "/rag/document/upload", { method: "POST", body: form });
+        const json = await res.json();
+        if (json.code !== 0) throw new Error(json.message || "上传失败");
+        setStatus("上传完成，状态：" + json.data.status + "，切片：" + json.data.chunkCount, true);
+        await loadDocs();
+      } catch (e) {
+        setStatus(e.message, false);
+      }
+    }
+
+    async function loadDocs() {
+      const tbody = document.getElementById("docTable");
+      try {
+        const list = await postJson("/rag/document/list", { kbId: kbId() });
+        tbody.innerHTML = (list || []).length
+          ? list.map((d) => `<tr><td>${d.fileName}</td><td>${d.status}</td><td>${d.chunkCount ?? 0}</td><td>${d.errorMsg || ""}</td></tr>`).join("")
+          : `<tr><td colspan="4">暂无文档</td></tr>`;
+      } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="4">${e.message}</td></tr>`;
+      }
+    }
+
+    function hideEmpty() {
+      const empty = document.getElementById("emptyState");
+      if (empty) empty.remove();
+    }
+
+    function newChat() {
+      if (abortAsk) abortAsk.abort();
+      asking = false;
+      document.getElementById("askBtn").disabled = false;
+      document.getElementById("threadInner").innerHTML = `
+        <div class="empty" id="emptyState">
+          <div class="logo" style="margin:0 auto;width:48px;height:48px;font-size:18px;">KL</div>
+          <h3>你好，需要查点什么？</h3>
+          <p>我会只根据知识库中的资料作答，找不到会明确告诉你。</p>
+          <div class="chips">
+            <button class="chip" type="button" onclick="askPreset('这份文档讲了什么？')">这份文档讲了什么？</button>
+            <button class="chip" type="button" onclick="askPreset('列出其中的核心制度条款')">列出核心制度条款</button>
+            <button class="chip" type="button" onclick="askPreset('有哪些需要特别注意的规定？')">有哪些注意事项？</button>
+          </div>
+        </div>`;
+    }
+
+    function appendUser(text) {
+      hideEmpty();
+      const wrap = document.createElement("div");
+      wrap.className = "msg user";
+      wrap.innerHTML = `<div class="bubble">${escapeHtml(text)}</div>`;
+      document.getElementById("threadInner").appendChild(wrap);
+    }
+
+    function appendBot() {
+      const wrap = document.createElement("div");
+      wrap.className = "msg bot";
+      wrap.innerHTML = `<div class="avatar bot">AI</div>
+        <div class="bubble">
+          <details class="think js-think" open>
+            <summary class="js-think-title">正在思考…</summary>
+            <div class="think-body js-think-body"></div>
+          </details>
+          <div class="js-text"></div>
+          <span class="cursor">&nbsp;</span>
+          <div class="sources js-sources" hidden></div>
+        </div>`;
+      document.getElementById("threadInner").appendChild(wrap);
+      return wrap;
+    }
+
+    function scrollThread() {
+      const el = document.getElementById("thread");
+      el.scrollTop = el.scrollHeight;
+    }
+
+    function renderSources(box, citations) {
+      if (!citations || !citations.length) {
+        box.hidden = true;
+        return;
+      }
+      box.hidden = false;
+      box.innerHTML = `<details open class="sources"><summary>参考来源 ${citations.length} 条</summary>${
+        citations.map((c, i) => `<div class="source-item">[${i + 1}] ${escapeHtml(c.fileName || "未知文件")}${c.score != null ? " · " + Number(c.score).toFixed(3) : ""}<br>${escapeHtml(c.content || "")}</div>`).join("")
+      }</details>`;
+    }
+
+    function askPreset(text) {
+      document.getElementById("question").value = text;
+      ask();
+    }
+
+    function onAskKey(e) {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        document.getElementById("askForm").requestSubmit();
+      }
+    }
+
+    document.getElementById("question").addEventListener("keydown", onAskKey);
+    document.getElementById("askForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      ask();
+    });
+
+    document.getElementById("question").addEventListener("input", function () {
+      this.style.height = "24px";
+      this.style.height = Math.min(this.scrollHeight, 140) + "px";
+    });
+
+    async function ask() {
+      const input = document.getElementById("question");
+      const btn = document.getElementById("askBtn");
+      const question = input.value.trim();
+      if (!question) return;
+      try {
+        kbId();
+      } catch (e) {
+        setStatus(e.message, false);
+        location.hash = "#kb";
+        return;
+      }
+      if (abortAsk) abortAsk.abort();
+      abortAsk = new AbortController();
+      asking = true;
+      btn.disabled = true;
+      input.value = "";
+      input.style.height = "24px";
+      appendUser(question);
+      const bot = appendBot();
+      const textEl = bot.querySelector(".js-text");
+      const sourceEl = bot.querySelector(".js-sources");
+      const thinkBox = bot.querySelector(".js-think");
+      const thinkTitle = bot.querySelector(".js-think-title");
+      const thinkBody = bot.querySelector(".js-think-body");
+      const cursor = bot.querySelector(".cursor");
+      scrollThread();
+      let text = "";
+      let reasoning = "";
+      try {
+        const res = await fetch(BASE + "/rag/ask/stream", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Accept": "text/event-stream" },
+          body: JSON.stringify({ kbId: kbId(), question, topK: 5 }),
+          signal: abortAsk.signal
+        });
+        if (!res.ok || !res.body) throw new Error("流式接口请求失败 HTTP " + res.status);
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true }).replace(/\r\n/g, "\n");
+          const chunks = buffer.split("\n\n");
+          buffer = chunks.pop();
+          for (const chunk of chunks) {
+            const dataLines = chunk.split("\n").filter((l) => l.startsWith("data:"));
+            if (!dataLines.length) continue;
+            const raw = dataLines.map((l) => l.slice(5).trim()).join("");
+            if (!raw) continue;
+            let payload;
+            try {
+              payload = JSON.parse(raw);
+            } catch {
+              continue;
+            }
+            if (payload.type === "status") {
+              thinkBox.hidden = false;
+              thinkTitle.textContent = payload.content || "正在思考…";
+              if (payload.content) {
+                reasoning += (reasoning ? "\n" : "") + payload.content;
+                thinkBody.textContent = reasoning;
+              }
+              scrollThread();
+            } else if (payload.type === "citations") {
+              renderSources(sourceEl, payload.citations || []);
+              thinkTitle.textContent = "正在结合资料生成回答…";
+              scrollThread();
+            } else if (payload.type === "reasoning") {
+              thinkBox.hidden = false;
+              thinkTitle.textContent = "思考过程";
+              reasoning += payload.content || "";
+              thinkBody.textContent = reasoning;
+              scrollThread();
+            } else if (payload.type === "delta") {
+              text += payload.content || "";
+              textEl.textContent = text;
+              if (reasoning) {
+                thinkTitle.textContent = "思考过程";
+                thinkBox.open = false;
+              }
+              scrollThread();
+            } else if (payload.type === "error") {
+              throw new Error(payload.message || "问答失败");
+            }
+          }
+        }
+        if (buffer.trim()) {
+          const leftover = buffer.split("\n").filter((l) => l.startsWith("data:")).map((l) => l.slice(5).trim()).join("");
+          if (leftover) {
+            try {
+              const payload = JSON.parse(leftover);
+              if (payload.type === "delta") {
+                text += payload.content || "";
+                textEl.textContent = text;
+              }
+            } catch (_) {}
+          }
+        }
+        if (!text) textEl.textContent = "（没有生成内容）";
+        if (!reasoning) thinkBox.hidden = true;
+        else {
+          thinkTitle.textContent = "思考过程";
+          thinkBox.open = false;
+        }
+      } catch (e) {
+        if (e.name === "AbortError") return;
+        bot.classList.add("error");
+        textEl.textContent = e.message || "问答失败";
+      } finally {
+        if (cursor) cursor.remove();
+        asking = false;
+        btn.disabled = false;
+        input.focus();
+        scrollThread();
+      }
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    }
+
+    window.addEventListener("hashchange", showPage);
+    showPage();
+    loadKb();
+  </script>
+</body>
+</html>

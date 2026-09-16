@@ -12,6 +12,7 @@ public class RagProperties {
     private Milvus milvus = new Milvus();
     private Chunk chunk = new Chunk();
     private Storage storage = new Storage();
+    private Ocr ocr = new Ocr();
 
     @Data
     public static class Embedding {
@@ -46,5 +47,15 @@ public class RagProperties {
     @Data
     public static class Storage {
         private String localDir = System.getProperty("user.home") + "/java-rag-files";
+    }
+
+    @Data
+    public static class Ocr {
+        private boolean enabled = true;
+        private String baseUrl;
+        private String apiKey;
+        private String model = "qwen-vl-ocr";
+        private int dpi = 144;
+        private int maxPages = 20;
     }
 }
