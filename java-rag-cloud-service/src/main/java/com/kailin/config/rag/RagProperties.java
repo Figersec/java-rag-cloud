@@ -15,20 +15,20 @@ public class RagProperties {
 
     @Data
     public static class Embedding {
-        private String baseUrl = "https://api.siliconflow.cn/v1";
-        private String apiKey = "";
-        private String model = "BAAI/bge-m3";
-        private int dimension = 1024;
-        private int batchSize = 16;
+        private String baseUrl;
+        private String apiKey;
+        private String model;
+        private int dimension;
+        private int batchSize;
     }
 
     @Data
     public static class Chat {
-        private String baseUrl = "https://api.siliconflow.cn/v1";
-        private String apiKey = "";
-        private String model = "Qwen/Qwen2.5-7B-Instruct";
-        private double temperature = 0.2;
-        private int maxTokens = 1024;
+        private String baseUrl;
+        private String apiKey;
+        private String model;
+        private double temperature;
+        private int maxTokens;
     }
 
     @Data

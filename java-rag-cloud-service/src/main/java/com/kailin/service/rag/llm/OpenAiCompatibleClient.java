@@ -76,6 +76,7 @@ public class OpenAiCompatibleClient {
         Map<String, Object> body = new HashMap<>();
         body.put("model", embedding.getModel());
         body.put("input", batch.size() == 1 ? batch.get(0) : batch);
+        body.put("dimensions", embedding.getDimension());
         body.put("encoding_format", "float");
         try {
             JsonNode root = postJson(joinUrl(embedding.getBaseUrl(), "/embeddings"), embedding.getApiKey(), body);

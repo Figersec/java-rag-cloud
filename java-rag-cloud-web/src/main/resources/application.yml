@@ -62,15 +62,15 @@ springdoc:
     path: /v3/api-docs
 rag:
   embedding:
-    base-url: https://api.siliconflow.cn/v1
-    api-key: ${RAG_EMBEDDING_API_KEY:}
-    model: BAAI/bge-m3
+    base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+    api-key: "sk-b222f3fff8694f77a1fb70eafb7c802b"
+    model: qwen3.7-text-embedding
     dimension: 1024
-    batch-size: 16
+    batch-size: 20
   chat:
-    base-url: https://api.siliconflow.cn/v1
-    api-key: ${RAG_CHAT_API_KEY:}
-    model: Qwen/Qwen2.5-7B-Instruct
+    base-url: https://api.deepseek.com/v1
+    api-key: "sk-3ac42f4a7c2b4e9daea2579db0c2c9d1"
+    model: deepseek-v4-pro
     temperature: 0.2
     max-tokens: 1024
   milvus:
