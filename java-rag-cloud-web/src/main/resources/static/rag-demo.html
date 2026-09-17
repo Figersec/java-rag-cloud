@@ -309,6 +309,18 @@
       toast(msg, ok === false ? "err" : (ok ? "ok" : "info"));
     }
 
+    function toastError(kind) {
+      const map = {
+        kb: "请先创建知识库后再试",
+        create: "知识库创建失败，请稍后重试",
+        list: "列表加载失败，请稍后重试",
+        upload: "文档入库失败，请稍后重试",
+        docs: "文档列表加载失败，请稍后重试",
+        ask: "回答生成失败，请稍后重试"
+      };
+      toast(map[kind] || "操作失败，请稍后重试", "err");
+    }
+
     function setBusy(btn, busy, label) {
       if (!btn) return;
       if (busy) {
@@ -433,7 +445,7 @@
         await loadKb();
         syncUploadKb();
       } catch (e) {
-        toast(e.message, "err");
+        toastError("create");
       } finally {
         setBusy(btn, false);
       }
@@ -459,7 +471,7 @@
         syncUploadKb();
         if ((location.hash || "").replace("#", "") === "upload") await loadDocs();
       } catch (e) {
-        toast(e.message, "err");
+        toastError("list");
       } finally {
         setBusy(btn, false);
         setTableBusy("kbTableWrap", false);
@@ -496,7 +508,7 @@
         toast("「" + json.data.fileName + "」已入库，切片 " + json.data.chunkCount + " 条", "ok");
         await loadDocs();
       } catch (e) {
-        toast(e.message, "err");
+        toastError("upload");
       } finally {
         setBusy(btn, false);
         zone.classList.remove("busy");
@@ -519,7 +531,8 @@
           ? list.map((d) => `<tr><td>${escapeHtml(d.fileName)}</td><td>${statusBadge(d.status)}</td><td>${d.chunkCount ?? 0}</td><td>${escapeHtml(d.errorMsg || "—")}</td></tr>`).join("")
           : `<tr><td class="empty-row" colspan="4">当前知识库还没有文档</td></tr>`;
       } catch (e) {
-        tbody.innerHTML = `<tr><td class="empty-row" colspan="4">${escapeHtml(e.message)}</td></tr>`;
+        tbody.innerHTML = `<tr><td class="empty-row" colspan="4">文档列表加载失败，请稍后重试</td></tr>`;
+        toastError("docs");
       } finally {
         setBusy(btn, false);
         setTableBusy("docTableWrap", false);
@@ -749,7 +762,7 @@
       try {
         kbId();
       } catch (e) {
-        setStatus(e.message, false);
+        toastError("kb");
         location.hash = "#kb";
         return;
       }
@@ -850,7 +863,7 @@
               pinBottom(textEl);
               scrollThread();
             } else if (payload.type === "error") {
-              throw new Error(payload.message || "问答失败");
+              throw new Error("ask");
             }
           }
         }
@@ -866,15 +879,16 @@
             } catch (_) {}
           }
         }
-        if (!text) textEl.textContent = "（没有生成内容）";
+        if (!text) textEl.textContent = "暂时没有生成回答，请再试一次";
         if (text) hideThink();
         else if (!reasoning) thinkBox.hidden = true;
       } catch (e) {
         if (e.name === "AbortError") return;
         bot.classList.add("error");
-        textEl.textContent = e.message || "问答失败";
+        textEl.textContent = "回答生成失败，请稍后重试";
         assistantMsg.error = true;
         assistantMsg.content = textEl.textContent;
+        toastError("ask");
       } finally {
         if (cursor) cursor.remove();
         asking = false;
