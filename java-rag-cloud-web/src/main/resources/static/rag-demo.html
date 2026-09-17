@@ -88,6 +88,24 @@
     .toast.ok { border-color: #b7e4d0; background: #f3fbf7; color: #0f7a56; }
     .toast.err { border-color: #f3c4c4; background: #fff6f6; color: #b42318; }
     .toast.info { border-color: #cdd9ff; background: #f5f8ff; color: #1f5eff; }
+    .table-actions { display: flex; gap: 8px; white-space: nowrap; }
+    .table-actions button { padding: 6px 10px; font-size: 12px; }
+    td.mono { font-family: Consolas, "SF Mono", monospace; font-size: 12px; color: var(--muted); max-width: 180px; overflow: hidden; text-overflow: ellipsis; }
+    .dialog {
+      position: fixed; inset: 0; z-index: 90; background: rgba(15, 23, 42, .36);
+      display: flex; align-items: center; justify-content: center; padding: 24px;
+    }
+    .dialog[hidden] { display: none; }
+    .dialog-card { width: min(420px, 100%); background: #fff; border-radius: 14px; padding: 20px 20px 16px; box-shadow: 0 20px 50px rgba(15, 23, 42, .18); }
+    .dialog-card h3 { margin: 0 0 8px; font-size: 16px; }
+    .dialog-card p { margin: 0 0 18px; color: var(--muted); font-size: 13px; line-height: 1.6; }
+    .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; }
+    .hit-list { display: flex; flex-direction: column; gap: 10px; }
+    .hit-card { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; background: #fff; }
+    .hit-top { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 8px; }
+    .hit-file { font-size: 13px; font-weight: 650; }
+    .hit-score { font-size: 12px; color: var(--muted); }
+    .hit-body { font-size: 13px; line-height: 1.7; color: #334155; white-space: pre-wrap; word-break: break-word; max-height: 160px; overflow: auto; }
     h2 { margin: 0 0 8px; font-size: 22px; }
     .hint { color: var(--muted); margin: 0 0 16px; font-size: 13px; }
     .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-bottom: 16px; box-shadow: var(--shadow); }
@@ -173,6 +191,7 @@
       </div>
       <a href="#kb" data-page="kb">知识库</a>
       <a href="#upload" data-page="upload">文档上传</a>
+      <a href="#retrieve" data-page="retrieve">检索诊断</a>
       <a href="#ask" data-page="ask">智能问答</a>
       <div class="nav-history">
         <span>历史对话</span>
@@ -213,8 +232,8 @@
           <div class="table-wrap" id="kbTableWrap">
             <div class="table-loading"><span class="spinner"></span>正在加载…</div>
             <table>
-              <thead><tr><th>名称</th><th>ID</th><th>描述</th></tr></thead>
-              <tbody id="kbTable"><tr><td class="empty-row" colspan="3">暂无知识库</td></tr></tbody>
+              <thead><tr><th>名称</th><th>ID</th><th>描述</th><th>操作</th></tr></thead>
+              <tbody id="kbTable"><tr><td class="empty-row" colspan="4">暂无知识库</td></tr></tbody>
             </table>
           </div>
         </div>
@@ -245,10 +264,43 @@
           <div class="table-wrap" id="docTableWrap">
             <div class="table-loading"><span class="spinner"></span>正在加载…</div>
             <table>
-              <thead><tr><th>文件</th><th>状态</th><th>切片</th><th>说明</th></tr></thead>
-              <tbody id="docTable"><tr><td class="empty-row" colspan="4">暂无文档</td></tr></tbody>
+              <thead><tr><th>文件</th><th>状态</th><th>切片</th><th>说明</th><th>操作</th></tr></thead>
+              <tbody id="docTable"><tr><td class="empty-row" colspan="5">暂无文档</td></tr></tbody>
             </table>
           </div>
+        </div>
+      </section>
+
+      <section id="page-retrieve" class="page admin">
+        <div class="page-head">
+          <h2>检索诊断</h2>
+          <p class="hint">只看向量召回结果，不调用大模型。用于核对真实问题有没有命中正确条款。</p>
+        </div>
+        <div class="card">
+          <div class="card-title">当前知识库：<span id="retrieveKbName">未选择</span></div>
+          <div class="row">
+            <div class="field" style="flex:2">
+              <label for="retrieveQ">问题</label>
+              <input id="retrieveQ" type="text" placeholder="例如：主管出差哪些可以报销" />
+            </div>
+            <div class="field" style="max-width:120px">
+              <label for="retrieveTopK">召回条数</label>
+              <input id="retrieveTopK" type="number" min="1" max="20" value="5" />
+            </div>
+            <div class="form-actions">
+              <button type="button" id="retrieveBtn" onclick="runRetrieve()">检索</button>
+            </div>
+          </div>
+          <div class="chips" style="justify-content:flex-start;margin-top:14px">
+            <button class="chip" type="button" onclick="retrievePreset('主管出差哪些可以报销')">主管出差报销</button>
+            <button class="chip" type="button" onclick="retrievePreset('住宿费标准是多少')">住宿标准</button>
+            <button class="chip" type="button" onclick="retrievePreset('交通费如何报销')">交通费</button>
+            <button class="chip" type="button" onclick="retrievePreset('年假有多少天')">无关问题（年假）</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">命中结果 <span id="retrieveMeta" style="font-weight:400;color:var(--muted)"></span></div>
+          <div id="retrieveHits"><div class="hist-empty" style="padding:12px 0">输入问题后查看召回切片</div></div>
         </div>
       </section>
 
@@ -286,6 +338,16 @@
       </section>
     </main>
   </div>
+  <div id="dialog" class="dialog" hidden>
+    <div class="dialog-card">
+      <h3 id="dialogTitle">确认</h3>
+      <p id="dialogText"></p>
+      <div class="dialog-actions">
+        <button class="ghost" type="button" id="dialogCancel">取消</button>
+        <button type="button" id="dialogOk">确认</button>
+      </div>
+    </div>
+  </div>
 
   <script>
     const BASE = ".";
@@ -316,7 +378,11 @@
         list: "列表加载失败，请稍后重试",
         upload: "文档入库失败，请稍后重试",
         docs: "文档列表加载失败，请稍后重试",
-        ask: "回答生成失败，请稍后重试"
+        ask: "回答生成失败，请稍后重试",
+        delKb: "知识库删除失败，请稍后重试",
+        delDoc: "文档删除失败，请稍后重试",
+        reindex: "重新入库失败，请稍后重试",
+        retrieve: "检索失败，请稍后重试"
       };
       toast(map[kind] || "操作失败，请稍后重试", "err");
     }
@@ -337,6 +403,25 @@
       document.getElementById(id).classList.toggle("busy", !!busy);
     }
 
+    function confirmAction(title, text) {
+      return new Promise((resolve) => {
+        const dialog = document.getElementById("dialog");
+        document.getElementById("dialogTitle").textContent = title;
+        document.getElementById("dialogText").textContent = text;
+        dialog.hidden = false;
+        const ok = document.getElementById("dialogOk");
+        const cancel = document.getElementById("dialogCancel");
+        const finish = (value) => {
+          dialog.hidden = true;
+          ok.onclick = null;
+          cancel.onclick = null;
+          resolve(value);
+        };
+        ok.onclick = () => finish(true);
+        cancel.onclick = () => finish(false);
+      });
+    }
+
     function currentKbName() {
       const sel = document.getElementById("kbSelect");
       const opt = sel.options[sel.selectedIndex];
@@ -344,7 +429,9 @@
     }
 
     function syncUploadKb() {
-      document.getElementById("uploadKbName").textContent = currentKbName();
+      const name = currentKbName();
+      document.getElementById("uploadKbName").textContent = name;
+      document.getElementById("retrieveKbName").textContent = name;
     }
 
     function fileSize(n) {
@@ -413,9 +500,9 @@
       document.body.classList.toggle("ask-mode", target.id === "page-ask");
       const link = document.querySelector("nav a[data-page='" + (target.id.replace("page-", "")) + "']");
       if (link) link.classList.add("active");
-      if (page === "upload") {
+      if (page === "upload" || page === "retrieve") {
         syncUploadKb();
-        if (document.getElementById("kbSelect").value) loadDocs().catch(() => {});
+        if (page === "upload" && document.getElementById("kbSelect").value) loadDocs().catch(() => {});
       }
       if (page === "ask") {
         const q = document.getElementById("question");
@@ -466,10 +553,16 @@
         else if (sel.options.length) sel.selectedIndex = 0;
         if (sel.value) localStorage.setItem(KB_KEY, sel.value);
         document.getElementById("kbTable").innerHTML = (list || []).length
-          ? list.map((k) => `<tr><td>${escapeHtml(k.name)}</td><td>${escapeHtml(k.id)}</td><td>${escapeHtml(k.description || "—")}</td></tr>`).join("")
-          : `<tr><td class="empty-row" colspan="3">暂无知识库，请先创建一个</td></tr>`;
+          ? list.map((k) => `<tr>
+              <td>${escapeHtml(k.name)}</td>
+              <td class="mono" title="${escapeHtml(k.id)}">${escapeHtml(k.id)}</td>
+              <td>${escapeHtml(k.description || "—")}</td>
+              <td><div class="table-actions"><button class="ghost" type="button" data-act="del-kb" data-id="${k.id}" data-name="${escapeHtml(k.name)}">删除</button></div></td>
+            </tr>`).join("")
+          : `<tr><td class="empty-row" colspan="4">暂无知识库，请先创建一个</td></tr>`;
         syncUploadKb();
-        if ((location.hash || "").replace("#", "") === "upload") await loadDocs();
+        const page = (location.hash || "").replace("#", "");
+        if (page === "upload") await loadDocs();
       } catch (e) {
         toastError("list");
       } finally {
@@ -523,19 +616,118 @@
         setTableBusy("docTableWrap", true);
         const id = document.getElementById("kbSelect").value;
         if (!id) {
-          tbody.innerHTML = `<tr><td class="empty-row" colspan="4">请先创建知识库</td></tr>`;
+          tbody.innerHTML = `<tr><td class="empty-row" colspan="5">请先创建知识库</td></tr>`;
           return;
         }
         const list = await postJson("/rag/document/list", { kbId: id });
         tbody.innerHTML = (list || []).length
-          ? list.map((d) => `<tr><td>${escapeHtml(d.fileName)}</td><td>${statusBadge(d.status)}</td><td>${d.chunkCount ?? 0}</td><td>${escapeHtml(d.errorMsg || "—")}</td></tr>`).join("")
-          : `<tr><td class="empty-row" colspan="4">当前知识库还没有文档</td></tr>`;
+          ? list.map((d) => `<tr>
+              <td>${escapeHtml(d.fileName)}</td>
+              <td>${statusBadge(d.status)}</td>
+              <td>${d.chunkCount ?? 0}</td>
+              <td>${escapeHtml(d.errorMsg || "—")}</td>
+              <td><div class="table-actions">
+                <button class="ghost" type="button" data-act="reindex" data-id="${d.id}">重新入库</button>
+                <button class="ghost" type="button" data-act="del-doc" data-id="${d.id}" data-name="${escapeHtml(d.fileName)}">删除</button>
+              </div></td>
+            </tr>`).join("")
+          : `<tr><td class="empty-row" colspan="5">当前知识库还没有文档</td></tr>`;
       } catch (e) {
-        tbody.innerHTML = `<tr><td class="empty-row" colspan="4">文档列表加载失败，请稍后重试</td></tr>`;
+        tbody.innerHTML = `<tr><td class="empty-row" colspan="5">文档列表加载失败，请稍后重试</td></tr>`;
         toastError("docs");
       } finally {
         setBusy(btn, false);
         setTableBusy("docTableWrap", false);
+      }
+    }
+
+    document.getElementById("kbTable").addEventListener("click", async (e) => {
+      const btn = e.target.closest("button[data-act='del-kb']");
+      if (!btn) return;
+      const ok = await confirmAction("删除知识库", "将同时删除该库下的文档、切片和向量，操作不可恢复。");
+      if (!ok) return;
+      try {
+        setBusy(btn, true, "删除中…");
+        await postJson("/rag/kb/delete", { kbId: btn.dataset.id });
+        if (localStorage.getItem(KB_KEY) === btn.dataset.id) localStorage.removeItem(KB_KEY);
+        toast("知识库已删除", "ok");
+        await loadKb();
+      } catch (err) {
+        toastError("delKb");
+        setBusy(btn, false);
+      }
+    });
+
+    document.getElementById("docTable").addEventListener("click", async (e) => {
+      const btn = e.target.closest("button[data-act]");
+      if (!btn) return;
+      if (btn.dataset.act === "del-doc") {
+        const ok = await confirmAction("删除文档", "将删除该文档的原文、切片和向量，操作不可恢复。");
+        if (!ok) return;
+        try {
+          setBusy(btn, true, "删除中…");
+          await postJson("/rag/document/delete", { docId: btn.dataset.id });
+          toast("文档已删除", "ok");
+          await loadDocs();
+        } catch (err) {
+          toastError("delDoc");
+          setBusy(btn, false);
+        }
+        return;
+      }
+      if (btn.dataset.act === "reindex") {
+        try {
+          setBusy(btn, true, "入库中…");
+          toast("正在重新解析并向量化…", "info");
+          await postJson("/rag/document/reindex", { docId: btn.dataset.id });
+          toast("已重新入库", "ok");
+          await loadDocs();
+        } catch (err) {
+          toastError("reindex");
+          setBusy(btn, false);
+          loadDocs().catch(() => {});
+        }
+      }
+    });
+
+    function retrievePreset(text) {
+      document.getElementById("retrieveQ").value = text;
+      runRetrieve();
+    }
+
+    async function runRetrieve() {
+      const btn = document.getElementById("retrieveBtn");
+      const question = document.getElementById("retrieveQ").value.trim();
+      const topK = Number(document.getElementById("retrieveTopK").value) || 5;
+      if (!question) {
+        toast("请输入要检索的问题", "err");
+        return;
+      }
+      try {
+        kbId();
+      } catch (e) {
+        toastError("kb");
+        location.hash = "#kb";
+        return;
+      }
+      try {
+        setBusy(btn, true, "检索中…");
+        const data = await postJson("/rag/retrieve", { kbId: kbId(), question, topK });
+        const hits = data.hits || [];
+        document.getElementById("retrieveMeta").textContent = "· 命中 " + (data.hitCount || 0) + " 条";
+        document.getElementById("retrieveHits").innerHTML = hits.length
+          ? `<div class="hit-list">${hits.map((h, i) => `<article class="hit-card">
+              <div class="hit-top">
+                <div class="hit-file">${i + 1}. ${escapeHtml(h.fileName || "未知文件")}</div>
+                <div class="hit-score">相似度 ${h.score == null ? "—" : Number(h.score).toFixed(4)}</div>
+              </div>
+              <div class="hit-body">${escapeHtml(h.content || "")}</div>
+            </article>`).join("")}</div>`
+          : `<div class="hist-empty" style="padding:12px 0">未命中切片。若这是制度内问题，说明召回偏差，可调整切片或换一种问法。</div>`;
+      } catch (e) {
+        toastError("retrieve");
+      } finally {
+        setBusy(btn, false);
       }
     }
 
@@ -916,6 +1108,46 @@
       if (!btn) return;
       openSession(btn.dataset.id);
     });
+
+    (function bindDropzone() {
+      const zone = document.getElementById("dropzone");
+      const input = document.getElementById("file");
+      const openPicker = () => input.click();
+      zone.addEventListener("click", (e) => {
+        if (e.target.closest("#reselectBtn")) {
+          e.preventDefault();
+          openPicker();
+          return;
+        }
+        openPicker();
+      });
+      input.addEventListener("change", syncFilePicker);
+      ["dragenter", "dragover"].forEach((type) => {
+        zone.addEventListener(type, (e) => {
+          e.preventDefault();
+          zone.classList.add("drag");
+        });
+      });
+      ["dragleave", "drop"].forEach((type) => {
+        zone.addEventListener(type, (e) => {
+          e.preventDefault();
+          zone.classList.remove("drag");
+        });
+      });
+      zone.addEventListener("drop", (e) => {
+        const files = e.dataTransfer && e.dataTransfer.files;
+        if (!files || !files.length) return;
+        try {
+          input.files = files;
+        } catch (_) {
+          const dt = new DataTransfer();
+          Array.from(files).forEach((file) => dt.items.add(file));
+          input.files = dt.files;
+        }
+        syncFilePicker();
+      });
+      syncFilePicker();
+    })();
 
     window.addEventListener("hashchange", showPage);
     showPage();

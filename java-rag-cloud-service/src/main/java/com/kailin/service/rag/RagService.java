@@ -1,6 +1,7 @@
 package com.kailin.service.rag;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.toolkit.Db;
 import com.kailin.api.KBException;
 import com.kailin.api.RagKRMessage;
 import com.kailin.config.rag.RagProperties;
@@ -14,6 +15,7 @@ import com.kailin.request.rag.KbCreateReq;
 import com.kailin.response.rag.KbRes;
 import com.kailin.response.rag.RagAskRes;
 import com.kailin.response.rag.RagDocumentRes;
+import com.kailin.response.rag.RagRetrieveRes;
 import com.kailin.service.rag.llm.OpenAiCompatibleClient;
 import com.kailin.service.rag.parse.DocumentTextExtractor;
 import com.kailin.service.rag.parse.TextChunker;
@@ -31,12 +33,14 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -78,6 +82,56 @@ public class RagService {
                 .stream()
                 .map(this::toDocumentRes)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteKb(String kbId) {
+        requireKb(kbId);
+        List<RagDocument> documents = ragDocumentMapper.selectList(Wrappers.lambdaQuery(RagDocument.class)
+                .eq(RagDocument::getKbId, kbId)
+                .select(RagDocument::getId, RagDocument::getFilePath));
+        milvusVectorStore.deleteByKbId(kbId);
+        ragChunkMapper.delete(Wrappers.lambdaQuery(RagChunk.class).eq(RagChunk::getKbId, kbId));
+        ragDocumentMapper.delete(Wrappers.lambdaQuery(RagDocument.class).eq(RagDocument::getKbId, kbId));
+        ragKbMapper.deleteById(kbId);
+        documents.forEach(item -> deleteLocalFile(item.getFilePath()));
+        deleteKbDirectory(kbId);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteDocument(String docId) {
+        RagDocument document = requireDocument(docId);
+        purgeIndexedChunks(document.getId());
+        ragDocumentMapper.deleteById(document.getId());
+        deleteLocalFile(document.getFilePath());
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public RagDocumentRes reindex(String docId) {
+        RagDocument document = requireDocument(docId);
+        Path stored = Path.of(StringUtils.defaultString(document.getFilePath()));
+        if (StringUtils.isBlank(document.getFilePath()) || !Files.isRegularFile(stored)) {
+            throw new KBException(RagKRMessage.FILE_MISSING);
+        }
+        document.setStatus("PROCESSING");
+        document.setErrorMsg(null);
+        ragDocumentMapper.updateById(document);
+        try {
+            ingest(document, stored, document.getFileType());
+            document.setStatus("READY");
+            document.setErrorMsg(null);
+            ragDocumentMapper.updateById(document);
+        } catch (Exception e) {
+            log.error("重新入库失败 docId={}", document.getId(), e);
+            document.setStatus("FAILED");
+            document.setErrorMsg(StringUtils.abbreviate(e.getMessage(), 1000));
+            ragDocumentMapper.updateById(document);
+            if (e instanceof KBException kbException) {
+                throw kbException;
+            }
+            throw new KBException(RagKRMessage.DOCUMENT_PARSE_FAILED, e.getMessage());
+        }
+        return toDocumentRes(document);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -162,6 +216,16 @@ public class RagService {
         emit.accept(Map.of("type", "done"));
     }
 
+    public RagRetrieveRes retrievePreview(String kbId, String question, Integer topK) {
+        AskContext ctx = retrieve(kbId, question, topK);
+        RagRetrieveRes res = new RagRetrieveRes();
+        res.setQuestion(question);
+        res.setTopK(topK == null || topK <= 0 ? 5 : Math.min(topK, 20));
+        res.setHits(ctx.res().getCitations());
+        res.setHitCount(ctx.res().getCitations() == null ? 0 : ctx.res().getCitations().size());
+        return res;
+    }
+
     private Map<String, Object> event(String type, String content) {
         Map<String, Object> event = new HashMap<>();
         event.put("type", type);
@@ -237,21 +301,54 @@ public class RagService {
         milvusVectorStore.deleteByDocId(document.getId());
         ragChunkMapper.delete(Wrappers.lambdaQuery(RagChunk.class).eq(RagChunk::getDocId, document.getId()));
 
-        List<RagChunk> entities = new ArrayList<>();
-        List<String> chunkIds = new ArrayList<>();
+        List<RagChunk> entities = new ArrayList<>(chunks.size());
         for (int i = 0; i < chunks.size(); i++) {
             RagChunk chunk = new RagChunk();
             chunk.setKbId(document.getKbId());
             chunk.setDocId(document.getId());
             chunk.setChunkIndex(i);
             chunk.setContent(chunks.get(i));
-            ragChunkMapper.insert(chunk);
             entities.add(chunk);
-            chunkIds.add(chunk.getId());
         }
+        Db.saveBatch(entities, 200);
+        List<String> chunkIds = entities.stream().map(RagChunk::getId).toList();
         List<List<Float>> vectors = openAiCompatibleClient.embed(chunks);
         milvusVectorStore.insert(document.getKbId(), document.getId(), chunkIds, vectors);
         document.setChunkCount(entities.size());
+    }
+
+    private void purgeIndexedChunks(String docId) {
+        milvusVectorStore.deleteByDocId(docId);
+        ragChunkMapper.delete(Wrappers.lambdaQuery(RagChunk.class).eq(RagChunk::getDocId, docId));
+    }
+
+    private void deleteLocalFile(String filePath) {
+        if (StringUtils.isBlank(filePath)) {
+            return;
+        }
+        try {
+            Files.deleteIfExists(Path.of(filePath));
+        } catch (Exception e) {
+            log.warn("删除本地文件失败 path={}", filePath, e);
+        }
+    }
+
+    private void deleteKbDirectory(String kbId) {
+        Path dir = Path.of(ragProperties.getStorage().getLocalDir(), kbId);
+        if (!Files.exists(dir)) {
+            return;
+        }
+        try (Stream<Path> walk = Files.walk(dir)) {
+            walk.sorted(Comparator.reverseOrder()).forEach(path -> {
+                try {
+                    Files.deleteIfExists(path);
+                } catch (Exception e) {
+                    log.warn("删除知识库目录失败 path={}", path, e);
+                }
+            });
+        } catch (Exception e) {
+            log.warn("删除知识库目录失败 kbId={}", kbId, e);
+        }
     }
 
     private Path storeFile(String kbId, String docId, String originalName, MultipartFile file) {
@@ -270,6 +367,14 @@ public class RagService {
         } catch (Exception e) {
             throw new KBException(RagKRMessage.DOCUMENT_PARSE_FAILED, "保存文件失败: " + e.getMessage());
         }
+    }
+
+    private RagDocument requireDocument(String docId) {
+        RagDocument document = ragDocumentMapper.selectById(docId);
+        if (document == null) {
+            throw new KBException(RagKRMessage.DOCUMENT_NOT_FOUND);
+        }
+        return document;
     }
 
     private RagKb requireKb(String kbId) {

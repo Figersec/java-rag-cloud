@@ -33,6 +33,7 @@ public class MilvusVectorStore {
 
     private final RagProperties ragProperties;
     private MilvusClientV2 client;
+    private volatile boolean collectionReady;
 
     public MilvusVectorStore(RagProperties ragProperties) {
         this.ragProperties = ragProperties;
@@ -59,9 +60,12 @@ public class MilvusVectorStore {
     }
 
     public synchronized void insert(String kbId, String docId, List<String> chunkIds, List<List<Float>> vectors) {
+        if (chunkIds.size() != vectors.size()) {
+            throw new KBException(RagKRMessage.EMBEDDING_FAILED, "向量数量与切片数量不一致");
+        }
         MilvusClientV2 milvus = requireClient();
         ensureCollection();
-        List<JsonObject> rows = new ArrayList<>();
+        List<JsonObject> rows = new ArrayList<>(chunkIds.size());
         for (int i = 0; i < chunkIds.size(); i++) {
             JsonObject row = new JsonObject();
             row.addProperty("id", chunkIds.get(i));
@@ -85,12 +89,20 @@ public class MilvusVectorStore {
     }
 
     public synchronized void deleteByDocId(String docId) {
+        deleteByFilter("doc_id == \"" + escape(docId) + "\"");
+    }
+
+    public synchronized void deleteByKbId(String kbId) {
+        deleteByFilter("kb_id == \"" + escape(kbId) + "\"");
+    }
+
+    private void deleteByFilter(String filter) {
         MilvusClientV2 milvus = requireClient();
         ensureCollection();
         try {
             milvus.delete(DeleteReq.builder()
                     .collectionName(collection())
-                    .filter("doc_id == \"" + escape(docId) + "\"")
+                    .filter(filter)
                     .build());
         } catch (Exception e) {
             throw new KBException(RagKRMessage.MILVUS_FAILED, e.getMessage());
@@ -101,7 +113,6 @@ public class MilvusVectorStore {
         MilvusClientV2 milvus = requireClient();
         ensureCollection();
         try {
-            milvus.loadCollection(LoadCollectionReq.builder().collectionName(collection()).build());
             SearchResp resp = milvus.search(SearchReq.builder()
                     .collectionName(collection())
                     .data(List.of(new FloatVec(queryVector)))
@@ -144,47 +155,55 @@ public class MilvusVectorStore {
     }
 
     private void ensureCollection() {
-        MilvusClientV2 milvus = requireClient();
-        Boolean exists = milvus.hasCollection(HasCollectionReq.builder()
-                .collectionName(collection())
-                .build());
-        if (Boolean.TRUE.equals(exists)) {
+        if (collectionReady) {
             return;
         }
-        CreateCollectionReq.CollectionSchema schema = milvus.createSchema();
-        schema.addField(AddFieldReq.builder()
-                .fieldName("id")
-                .dataType(DataType.VarChar)
-                .maxLength(64)
-                .isPrimaryKey(true)
-                .autoID(false)
-                .build());
-        schema.addField(AddFieldReq.builder()
-                .fieldName("kb_id")
-                .dataType(DataType.VarChar)
-                .maxLength(64)
-                .build());
-        schema.addField(AddFieldReq.builder()
-                .fieldName("doc_id")
-                .dataType(DataType.VarChar)
-                .maxLength(64)
-                .build());
-        schema.addField(AddFieldReq.builder()
-                .fieldName("embedding")
-                .dataType(DataType.FloatVector)
-                .dimension(ragProperties.getEmbedding().getDimension())
-                .build());
-        IndexParam indexParam = IndexParam.builder()
-                .fieldName("embedding")
-                .indexType(IndexParam.IndexType.AUTOINDEX)
-                .metricType(IndexParam.MetricType.COSINE)
-                .build();
-        milvus.createCollection(CreateCollectionReq.builder()
-                .collectionName(collection())
-                .collectionSchema(schema)
-                .indexParams(List.of(indexParam))
-                .build());
-        milvus.loadCollection(LoadCollectionReq.builder().collectionName(collection()).build());
+        synchronized (this) {
+            if (collectionReady) {
+                return;
+            }
+            MilvusClientV2 milvus = requireClient();
+            Boolean exists = milvus.hasCollection(HasCollectionReq.builder()
+                    .collectionName(collection())
+                    .build());
+            if (!Boolean.TRUE.equals(exists)) {
+                CreateCollectionReq.CollectionSchema schema = milvus.createSchema();
+                schema.addField(AddFieldReq.builder()
+                        .fieldName("id")
+                        .dataType(DataType.VarChar)
+                        .maxLength(64)
+                        .isPrimaryKey(true)
+                        .autoID(false)
+                        .build());
+                schema.addField(AddFieldReq.builder()
+                        .fieldName("kb_id")
+                        .dataType(DataType.VarChar)
+                        .maxLength(64)
+                        .build());
+                schema.addField(AddFieldReq.builder()
+                        .fieldName("doc_id")
+                        .dataType(DataType.VarChar)
+                        .maxLength(64)
+                        .build());
+                schema.addField(AddFieldReq.builder()
+                        .fieldName("embedding")
+                        .dataType(DataType.FloatVector)
+                        .dimension(ragProperties.getEmbedding().getDimension())
+                        .build());
+                IndexParam indexParam = IndexParam.builder()
+                        .fieldName("embedding")
+                        .indexType(IndexParam.IndexType.AUTOINDEX)
+                        .metricType(IndexParam.MetricType.COSINE)
+                        .build();
+                milvus.createCollection(CreateCollectionReq.builder()
+                        .collectionName(collection())
+                        .collectionSchema(schema)
+                        .indexParams(List.of(indexParam))
+                        .build());
+            }
+            milvus.loadCollection(LoadCollectionReq.builder().collectionName(collection()).build());
+            collectionReady = true;
+        }
     }
 
     private MilvusClientV2 requireClient() {

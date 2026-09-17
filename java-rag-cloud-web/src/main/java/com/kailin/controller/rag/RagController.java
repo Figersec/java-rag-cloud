@@ -2,12 +2,14 @@ package com.kailin.controller.rag;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kailin.api.KpResponse;
+import com.kailin.request.rag.DocIdReq;
 import com.kailin.request.rag.KbCreateReq;
 import com.kailin.request.rag.KbIdReq;
 import com.kailin.request.rag.RagAskReq;
 import com.kailin.response.rag.KbRes;
 import com.kailin.response.rag.RagAskRes;
 import com.kailin.response.rag.RagDocumentRes;
+import com.kailin.response.rag.RagRetrieveRes;
 import com.kailin.service.rag.RagService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -50,6 +52,13 @@ public class RagController {
         return KpResponse.data(ragService.listKb());
     }
 
+    @PostMapping("/kb/delete")
+    @Operation(summary = "删除知识库")
+    public KpResponse<Void> deleteKb(@Valid @RequestBody KbIdReq req) {
+        ragService.deleteKb(req.getKbId());
+        return KpResponse.success();
+    }
+
     @PostMapping(value = "/document/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "上传文档并入库")
     public KpResponse<RagDocumentRes> upload(@RequestParam("kbId") String kbId,
@@ -61,6 +70,25 @@ public class RagController {
     @Operation(summary = "知识库文档列表")
     public KpResponse<List<RagDocumentRes>> listDocuments(@Valid @RequestBody KbIdReq req) {
         return KpResponse.data(ragService.listDocuments(req.getKbId()));
+    }
+
+    @PostMapping("/document/delete")
+    @Operation(summary = "删除文档")
+    public KpResponse<Void> deleteDocument(@Valid @RequestBody DocIdReq req) {
+        ragService.deleteDocument(req.getDocId());
+        return KpResponse.success();
+    }
+
+    @PostMapping("/document/reindex")
+    @Operation(summary = "重新入库")
+    public KpResponse<RagDocumentRes> reindex(@Valid @RequestBody DocIdReq req) {
+        return KpResponse.data(ragService.reindex(req.getDocId()));
+    }
+
+    @PostMapping("/retrieve")
+    @Operation(summary = "检索预览（不调用大模型）")
+    public KpResponse<RagRetrieveRes> retrieve(@Valid @RequestBody RagAskReq req) {
+        return KpResponse.data(ragService.retrievePreview(req.getKbId(), req.getQuestion(), req.getTopK()));
     }
 
     @PostMapping("/ask")
@@ -85,7 +113,7 @@ public class RagController {
         } catch (Exception e) {
             Map<String, Object> error = new LinkedHashMap<>();
             error.put("type", "error");
-            error.put("message", e.getMessage() == null ? "问答失败" : e.getMessage());
+            error.put("message", "问答失败");
             writeSse(out, error);
         }
     }
